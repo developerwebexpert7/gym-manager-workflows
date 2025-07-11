@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gym Management - Role Selection</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            padding: 40px;
+            max-width: 400px;
+            width: 100%;
+        }
+        
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .logo h1 {
+            color: #333;
+            font-size: 24px;
+            font-weight: 600;
+        }
+        
+        .logo p {
+            color: #666;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+        
+        .role-grid {
+            display: grid;
+            gap: 15px;
+        }
+        
+        .role-card {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .role-card:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.15);
+        }
+        
+        .role-card.selected {
+            border-color: #667eea;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .role-icon {
+            width: 40px;
+            height: 40px;
+            background: #667eea;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 12px;
+            color: white;
+            font-size: 18px;
+        }
+        
+        .role-card.selected .role-icon {
+            background: white;
+            color: #667eea;
+        }
+        
+        .role-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .role-desc {
+            font-size: 12px;
+            color: #666;
+            line-height: 1.4;
+        }
+        
+        .role-card.selected .role-desc {
+            color: rgba(255,255,255,0.9);
+        }
+        
+        .device-indicator {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 12px;
+            color: #999;
+        }
+        
+        .role-card.selected .device-indicator {
+            color: rgba(255,255,255,0.7);
+        }
+        
+        .continue-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 15px 30px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .continue-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+        
+        .continue-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .annotations {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: rgba(255,255,255,0.9);
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 12px;
+            max-width: 200px;
+        }
+        
+        .annotation {
+            margin-bottom: 5px;
+            color: #333;
+        }
+        
+        .annotation strong {
+            color: #667eea;
+        }
+    </style>
+</head>
+<body>
+    <div class="annotations">
+        <div class="annotation"><strong>🔐 Role-based Access:</strong> Each role has specific permissions</div>
+        <div class="annotation"><strong>📱 Device Optimization:</strong> Mobile-first for members</div>
+        <div class="annotation"><strong>⚡ Auto-redirect:</strong> Based on user type</div>
+    </div>
+    
+    <div class="container">
+        <div class="logo">
+            <h1>[WL] GymFlex</h1>
+            <p>Choose your role to continue</p>
+        </div>
+        
+        <div class="role-grid">
+            <div class="role-card" onclick="selectRole(this)">
+                <div class="device-indicator">📱</div>
+                <div class="role-icon">👤</div>
+                <div class="role-title">Member</div>
+                <div class="role-desc">Book classes, track workouts, manage membership</div>
+            </div>
+            
+            <div class="role-card" onclick="selectRole(this)">
+                <div class="device-indicator">📱</div>
+                <div class="role-icon">🏋️</div>
+                <div class="role-title">Trainer</div>
+                <div class="role-desc">View schedule, track client progress, manage sessions</div>
+            </div>
+            
+            <div class="role-card" onclick="selectRole(this)">
+                <div class="device-indicator">💻</div>
+                <div class="role-icon">👨‍💼</div>
+                <div class="role-title">Staff</div>
+                <div class="role-desc">Check-in members, handle front desk operations</div>
+            </div>
+            
+            <div class="role-card" onclick="selectRole(this)">
+                <div class="device-indicator">💻</div>
+                <div class="role-icon">👑</div>
+                <div class="role-title">Manager</div>
+                <div class="role-desc">View analytics, manage staff, control operations</div>
+            </div>
+            
+            <div class="role-card" onclick="selectRole(this)">
+                <div class="device-indicator">💻</div>
+                <div class="role-icon">⚙️</div>
+                <div class="role-title">White-Label Admin</div>
+                <div class="role-desc">Customize branding, manage multi-branch setup</div>
+            </div>
+        </div>
+        
+        <button class="continue-btn" id="continueBtn" disabled onclick="continueToApp()">
+            Continue
+        </button>
+    </div>
+
+    <script>
+        function selectRole(card) {
+            // Remove selection from all cards
+            document.querySelectorAll('.role-card').forEach(c => c.classList.remove('selected'));
+            
+            // Add selection to clicked card
+            card.classList.add('selected');
+            
+            // Enable continue button
+            document.getElementById('continueBtn').disabled = false;
+        }
+        
+        function continueToApp() {
+            const selectedCard = document.querySelector('.role-card.selected');
+            const role = selectedCard.querySelector('.role-title').textContent;
+            
+            // Simulate navigation based on role
+            if (role === 'Member') {
+                window.location.href = '02-member-onboarding.html';
+            } else if (role === 'Trainer') {
+                window.location.href = '06-trainer-dashboard.html';
+            } else if (role === 'Staff') {
+                window.location.href = '05-staff-dashboard.html';
+            } else if (role === 'Manager') {
+                window.location.href = '08-manager-dashboard.html';
+            } else if (role === 'White-Label Admin') {
+                window.location.href = '12-white-label-editor.html';
+            }
+        }
+    </script>
+</body>
+</html> 

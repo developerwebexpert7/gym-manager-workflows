@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workout Tracker</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+            min-height: 100vh;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header h1 {
+            font-size: 20px;
+            margin-bottom: 5px;
+        }
+        
+        .header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .workout-status {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 15px;
+        }
+        
+        .status-item {
+            text-align: center;
+        }
+        
+        .status-number {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .status-label {
+            font-size: 10px;
+            opacity: 0.8;
+        }
+        
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .workout-card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+        
+        .workout-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+        
+        .workout-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .workout-time {
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .exercise-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .exercise-item {
+            border: 2px solid #e1e5e9;
+            border-radius: 12px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .exercise-item:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.15);
+        }
+        
+        .exercise-item.completed {
+            border-color: #10b981;
+            background: #f0fdf4;
+        }
+        
+        .exercise-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        
+        .exercise-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .exercise-status {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid #e1e5e9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+        
+        .exercise-item.completed .exercise-status {
+            background: #10b981;
+            border-color: #10b981;
+            color: white;
+        }
+        
+        .sets-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .set-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .set-number {
+            font-size: 12px;
+            font-weight: 600;
+            color: #666;
+            min-width: 30px;
+        }
+        
+        .set-input {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid #e1e5e9;
+            border-radius: 6px;
+            font-size: 14px;
+            text-align: center;
+        }
+        
+        .set-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .set-unit {
+            font-size: 12px;
+            color: #666;
+            min-width: 30px;
+        }
+        
+        .add-set-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 8px 12px;
+            font-size: 12px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        
+        .add-set-btn:hover {
+            background: #5a67d8;
+        }
+        
+        .exercise-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .action-btn {
+            flex: 1;
+            padding: 8px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s ease;
+        }
+        
+        .action-btn.primary {
+            background: #667eea;
+            color: white;
+        }
+        
+        .action-btn.secondary {
+            background: #f8f9fa;
+            color: #666;
+            border: 1px solid #e1e5e9;
+        }
+        
+        .quick-add {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+        
+        .quick-add-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 15px;
+        }
+        
+        .exercise-search {
+            position: relative;
+            margin-bottom: 15px;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 12px 16px 12px 45px;
+            border: 2px solid #e1e5e9;
+            border-radius: 12px;
+            font-size: 16px;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+        }
+        
+        .exercise-suggestions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .suggestion-chip {
+            background: #f8f9fa;
+            border: 1px solid #e1e5e9;
+            border-radius: 20px;
+            padding: 6px 12px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .suggestion-chip:hover {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+        
+        .bottom-actions {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            padding: 20px;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
+            display: flex;
+            gap: 10px;
+        }
+        
+        .bottom-btn {
+            flex: 1;
+            padding: 15px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s ease;
+        }
+        
+        .bottom-btn.primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .bottom-btn.secondary {
+            background: #f8f9fa;
+            color: #666;
+            border: 2px solid #e1e5e9;
+        }
+        
+        .annotations {
+            position: fixed;
+            top: 80px;
+            right: 10px;
+            background: rgba(255,255,255,0.95);
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 12px;
+            max-width: 250px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        
+        .annotation {
+            margin-bottom: 8px;
+            color: #333;
+        }
+        
+        .annotation strong {
+            color: #667eea;
+        }
+        
+        .timer {
+            background: #667eea;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .rest-timer {
+            background: #f59e0b;
+        }
+    </style>
+</head>
+<body>
+    <div class="annotations">
+        <div class="annotation"><strong>📱 Mobile Optimized:</strong> Touch-friendly interface</div>
+        <div class="annotation"><strong>⚡ Quick Entry:</strong> Fast set logging</div>
+        <div class="annotation"><strong>📊 Progress Tracking:</strong> Auto-save workout data</div>
+        <div class="annotation"><strong>⏱️ Rest Timer:</strong> Built-in rest periods</div>
+    </div>
+
+    <div class="header">
+        <h1>Upper Body Strength</h1>
+        <p>Started at 9:30 AM</p>
+        
+        <div class="workout-status">
+            <div class="status-item">
+                <div class="status-number">3</div>
+                <div class="status-label">Exercises</div>
+            </div>
+            <div class="status-item">
+                <div class="status-number">12</div>
+                <div class="status-label">Sets</div>
+            </div>
+            <div class="status-item">
+                <div class="status-number">45</div>
+                <div class="status-label">Minutes</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="quick-add">
+            <div class="quick-add-title">Quick Add Exercise</div>
+            
+            <div class="exercise-search">
+                <div class="search-icon">🔍</div>
+                <input type="text" class="search-input" placeholder="Search exercises..." onkeyup="searchExercises(this.value)">
+            </div>
+            
+            <div class="exercise-suggestions">
+                <div class="suggestion-chip" onclick="addExercise('Bench Press')">Bench Press</div>
+                <div class="suggestion-chip" onclick="addExercise('Pull-ups')">Pull-ups</div>
+                <div class="suggestion-chip" onclick="addExercise('Overhead Press')">Overhead Press</div>
+                <div class="suggestion-chip" onclick="addExercise('Rows')">Rows</div>
+            </div>
+        </div>
+
+        <div class="workout-card">
+            <div class="workout-header">
+                <div class="workout-title">Bench Press</div>
+                <div class="workout-time">
+                    <div class="timer">⏱️ 2:30</div>
+                </div>
+            </div>
+            
+            <div class="exercise-list">
+                <div class="exercise-item completed" onclick="toggleExercise(this)">
+                    <div class="exercise-header">
+                        <div class="exercise-name">Bench Press</div>
+                        <div class="exercise-status">✓</div>
+                    </div>
+                    
+                    <div class="sets-container">
+                        <div class="set-row">
+                            <div class="set-number">1</div>
+                            <input type="number" class="set-input" value="135" placeholder="Weight">
+                            <div class="set-unit">lbs</div>
+                            <input type="number" class="set-input" value="10" placeholder="Reps">
+                            <div class="set-unit">reps</div>
+                        </div>
+                        
+                        <div class="set-row">
+                            <div class="set-number">2</div>
+                            <input type="number" class="set-input" value="155" placeholder="Weight">
+                            <div class="set-unit">lbs</div>
+                            <input type="number" class="set-input" value="8" placeholder="Reps">
+                            <div class="set-unit">reps</div>
+                        </div>
+                        
+                        <div class="set-row">
+                            <div class="set-number">3</div>
+                            <input type="number" class="set-input" value="175" placeholder="Weight">
+                            <div class="set-unit">lbs</div>
+                            <input type="number" class="set-input" value="6" placeholder="Reps">
+                            <div class="set-unit">reps</div>
+                        </div>
+                    </div>
+                    
+                    <div class="exercise-actions">
+                        <button class="action-btn primary" onclick="addSet(this)">Add Set</button>
+                        <button class="action-btn secondary" onclick="showHistory()">History</button>
+                    </div>
+                </div>
+                
+                <div class="exercise-item" onclick="toggleExercise(this)">
+                    <div class="exercise-header">
+                        <div class="exercise-name">Pull-ups</div>
+                        <div class="exercise-status">○</div>
+                    </div>
+                    
+                    <div class="sets-container">
+                        <div class="set-row">
+                            <div class="set-number">1</div>
+                            <input type="number" class="set-input" placeholder="Weight">
+                            <div class="set-unit">lbs</div>
+                            <input type="number" class="set-input" placeholder="Reps">
+                            <div class="set-unit">reps</div>
+                        </div>
+                    </div>
+                    
+                    <div class="exercise-actions">
+                        <button class="action-btn primary" onclick="addSet(this)">Add Set</button>
+                        <button class="action-btn secondary" onclick="showHistory()">History</button>
+                    </div>
+                </div>
+                
+                <div class="exercise-item" onclick="toggleExercise(this)">
+                    <div class="exercise-header">
+                        <div class="exercise-name">Overhead Press</div>
+                        <div class="exercise-status">○</div>
+                    </div>
+                    
+                    <div class="sets-container">
+                        <div class="set-row">
+                            <div class="set-number">1</div>
+                            <input type="number" class="set-input" placeholder="Weight">
+                            <div class="set-unit">lbs</div>
+                            <input type="number" class="set-input" placeholder="Reps">
+                            <div class="set-unit">reps</div>
+                        </div>
+                    </div>
+                    
+                    <div class="exercise-actions">
+                        <button class="action-btn primary" onclick="addSet(this)">Add Set</button>
+                        <button class="action-btn secondary" onclick="showHistory()">History</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="bottom-actions">
+        <button class="bottom-btn secondary" onclick="pauseWorkout()">Pause</button>
+        <button class="bottom-btn primary" onclick="finishWorkout()">Finish Workout</button>
+    </div>
+
+    <script>
+        let workoutTimer = null;
+        let startTime = new Date();
+        
+        function startTimer() {
+            workoutTimer = setInterval(() => {
+                const now = new Date();
+                const diff = Math.floor((now - startTime) / 1000 / 60);
+                // Update timer display
+            }, 1000);
+        }
+        
+        function searchExercises(query) {
+            // In real app, search exercise database
+            console.log('Searching for:', query);
+        }
+        
+        function addExercise(name) {
+            // In real app, add exercise to workout
+            console.log('Adding exercise:', name);
+        }
+        
+        function toggleExercise(item) {
+            item.classList.toggle('completed');
+            const status = item.querySelector('.exercise-status');
+            if (item.classList.contains('completed')) {
+                status.textContent = '✓';
+                status.style.background = '#10b981';
+                status.style.color = 'white';
+            } else {
+                status.textContent = '○';
+                status.style.background = 'transparent';
+                status.style.color = 'inherit';
+            }
+        }
+        
+        function addSet(btn) {
+            const setsContainer = btn.closest('.exercise-item').querySelector('.sets-container');
+            const setCount = setsContainer.children.length + 1;
+            
+            const newSet = document.createElement('div');
+            newSet.className = 'set-row';
+            newSet.innerHTML = `
+                <div class="set-number">${setCount}</div>
+                <input type="number" class="set-input" placeholder="Weight">
+                <div class="set-unit">lbs</div>
+                <input type="number" class="set-input" placeholder="Reps">
+                <div class="set-unit">reps</div>
+            `;
+            
+            setsContainer.appendChild(newSet);
+        }
+        
+        function showHistory() {
+            // In real app, show exercise history
+            console.log('Showing exercise history');
+        }
+        
+        function pauseWorkout() {
+            // In real app, pause workout timer
+            console.log('Pausing workout');
+        }
+        
+        function finishWorkout() {
+            // In real app, save workout and show summary
+            console.log('Finishing workout');
+            window.location.href = '08-workout-summary.html';
+        }
+        
+        // Start timer when page loads
+        startTimer();
+    </script>
+</body>
+</html> 

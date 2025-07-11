@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trainer Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+            min-height: 100vh;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .trainer-avatar {
+            width: 50px;
+            height: 50px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 18px;
+        }
+        
+        .trainer-info h2 {
+            font-size: 20px;
+            margin-bottom: 2px;
+        }
+        
+        .trainer-info p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .stats-mini {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .stat-mini {
+            text-align: center;
+        }
+        
+        .stat-mini .number {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .stat-mini .label {
+            font-size: 10px;
+            opacity: 0.8;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .section {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+        
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .section-icon {
+            width: 32px;
+            height: 32px;
+            background: #667eea;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 16px;
+        }
+        
+        .schedule-tabs {
+            display: flex;
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 4px;
+            margin-bottom: 20px;
+        }
+        
+        .schedule-tab {
+            flex: 1;
+            padding: 12px;
+            text-align: center;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .schedule-tab.active {
+            background: #667eea;
+            color: white;
+        }
+        
+        .session-card {
+            border: 2px solid #e1e5e9;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .session-card:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.15);
+        }
+        
+        .session-card.upcoming {
+            border-color: #667eea;
+            background: #f8f9ff;
+        }
+        
+        .session-card.completed {
+            border-color: #10b981;
+            background: #f0fdf4;
+        }
+        
+        .session-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        
+        .session-time {
+            font-size: 14px;
+            font-weight: 600;
+            color: #667eea;
+        }
+        
+        .session-type {
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 10px;
+            font-weight: 500;
+        }
+        
+        .session-type.private {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        
+        .session-type.group {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+        
+        .client-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .client-avatar {
+            width: 35px;
+            height: 35px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        .client-details h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 2px;
+        }
+        
+        .client-details p {
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .progress-chart {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .progress-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        
+        .progress-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .progress-percentage {
+            font-size: 12px;
+            color: #667eea;
+            font-weight: 600;
+        }
+        
+        .progress-bar {
+            height: 8px;
+            background: #e1e5e9;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+        
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .metric-card {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+        }
+        
+        .metric-number {
+            font-size: 20px;
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+        
+        .metric-label {
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .notes-section {
+            margin-top: 20px;
+        }
+        
+        .note-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 14px;
+            resize: vertical;
+            min-height: 80px;
+            margin-bottom: 10px;
+        }
+        
+        .note-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .note-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .note-btn {
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s ease;
+        }
+        
+        .note-btn.primary {
+            background: #667eea;
+            color: white;
+        }
+        
+        .note-btn.secondary {
+            background: #f8f9fa;
+            color: #666;
+            border: 1px solid #e1e5e9;
+        }
+        
+        .annotations {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: rgba(255,255,255,0.95);
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 12px;
+            max-width: 250px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        
+        .annotation {
+            margin-bottom: 8px;
+            color: #333;
+        }
+        
+        .annotation strong {
+            color: #667eea;
+        }
+        
+        .equipment-request {
+            background: #fef3c7;
+            border: 1px solid #f59e0b;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 15px;
+        }
+        
+        .equipment-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+        
+        .equipment-icon {
+            font-size: 16px;
+        }
+        
+        .equipment-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #92400e;
+        }
+        
+        .equipment-desc {
+            font-size: 12px;
+            color: #92400e;
+        }
+    </style>
+</head>
+<body>
+    <div class="annotations">
+        <div class="annotation"><strong>📱 Mobile/Tablet:</strong> Responsive design</div>
+        <div class="annotation"><strong>📊 Progress Tracking:</strong> Visual client progress</div>
+        <div class="annotation"><strong>📝 Session Notes:</strong> Real-time note taking</div>
+        <div class="annotation"><strong>🔧 Equipment Requests:</strong> Maintenance alerts</div>
+    </div>
+
+    <div class="header">
+        <div class="header-left">
+            <div class="trainer-avatar">MC</div>
+            <div class="trainer-info">
+                <h2>Mike Chen</h2>
+                <p>Personal Trainer • 5 years experience</p>
+            </div>
+        </div>
+        
+        <div class="header-right">
+            <div class="stats-mini">
+                <div class="stat-mini">
+                    <div class="number">8</div>
+                    <div class="label">Today's Sessions</div>
+                </div>
+                <div class="stat-mini">
+                    <div class="number">24</div>
+                    <div class="label">Active Clients</div>
+                </div>
+                <div class="stat-mini">
+                    <div class="number">4.9</div>
+                    <div class="label">Rating</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="section">
+            <div class="section-title">
+                <div class="section-icon">📅</div>
+                Today's Schedule
+            </div>
+            
+            <div class="schedule-tabs">
+                <div class="schedule-tab active" onclick="filterSessions('all')">All</div>
+                <div class="schedule-tab" onclick="filterSessions('upcoming')">Upcoming</div>
+                <div class="schedule-tab" onclick="filterSessions('completed')">Completed</div>
+            </div>
+            
+            <div class="session-card upcoming" onclick="openSession(this)">
+                <div class="session-header">
+                    <div class="session-time">9:00 AM - 10:00 AM</div>
+                    <div class="session-type private">Private</div>
+                </div>
+                <div class="client-info">
+                    <div class="client-avatar">JD</div>
+                    <div class="client-details">
+                        <h3>John Doe</h3>
+                        <p>Strength Training • 3 months</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="session-card" onclick="openSession(this)">
+                <div class="session-header">
+                    <div class="session-time">11:00 AM - 12:00 PM</div>
+                    <div class="session-type group">Group</div>
+                </div>
+                <div class="client-info">
+                    <div class="client-avatar">MJ</div>
+                    <div class="client-details">
+                        <h3>Mary Johnson</h3>
+                        <p>HIIT Class • 6 participants</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="session-card completed" onclick="openSession(this)">
+                <div class="session-header">
+                    <div class="session-time">7:00 AM - 8:00 AM</div>
+                    <div class="session-type private">Private</div>
+                </div>
+                <div class="client-info">
+                    <div class="client-avatar">RS</div>
+                    <div class="client-details">
+                        <h3>Robert Smith</h3>
+                        <p>Weight Loss • 2 months</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="equipment-request">
+                <div class="equipment-header">
+                    <div class="equipment-icon">🔧</div>
+                    <div class="equipment-title">Equipment Request</div>
+                </div>
+                <div class="equipment-desc">Treadmill #3 needs maintenance - belt slipping</div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">
+                <div class="section-icon">📈</div>
+                Client Progress
+            </div>
+            
+            <div class="progress-chart">
+                <div class="progress-header">
+                    <div class="progress-title">John Doe - Weight Loss Goal</div>
+                    <div class="progress-percentage">75%</div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 75%"></div>
+                </div>
+            </div>
+            
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-number">185</div>
+                    <div class="metric-label">Current Weight (lbs)</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-number">-15</div>
+                    <div class="metric-label">Weight Lost (lbs)</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-number">12</div>
+                    <div class="metric-label">Sessions Completed</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-number">85%</div>
+                    <div class="metric-label">Attendance Rate</div>
+                </div>
+            </div>
+            
+            <div class="notes-section">
+                <div class="section-title" style="font-size: 16px; margin-bottom: 10px;">
+                    <div class="section-icon" style="width: 24px; height: 24px; font-size: 12px;">📝</div>
+                    Session Notes
+                </div>
+                
+                <textarea class="note-input" placeholder="Add notes about today's session..."></textarea>
+                
+                <div class="note-actions">
+                    <button class="note-btn primary" onclick="saveNotes()">Save Notes</button>
+                    <button class="note-btn secondary" onclick="clearNotes()">Clear</button>
+                    <button class="note-btn secondary" onclick="shareNotes()">Share</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function filterSessions(filter) {
+            document.querySelectorAll('.schedule-tab').forEach(tab => tab.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // In real app, filter sessions based on selected filter
+            console.log('Filtering sessions:', filter);
+        }
+        
+        function openSession(card) {
+            // In real app, open session details
+            console.log('Opening session details');
+            
+            // Simulate session interaction
+            if (card.classList.contains('upcoming')) {
+                card.classList.remove('upcoming');
+                card.classList.add('completed');
+            }
+        }
+        
+        function saveNotes() {
+            // In real app, save session notes
+            console.log('Saving session notes');
+            alert('Notes saved successfully!');
+        }
+        
+        function clearNotes() {
+            // In real app, clear notes
+            document.querySelector('.note-input').value = '';
+        }
+        
+        function shareNotes() {
+            // In real app, share notes with client
+            console.log('Sharing notes with client');
+        }
+        
+        // Auto-update progress bars
+        setInterval(() => {
+            const progressBars = document.querySelectorAll('.progress-fill');
+            progressBars.forEach(bar => {
+                const currentWidth = parseInt(bar.style.width);
+                if (currentWidth < 100) {
+                    bar.style.width = (currentWidth + 1) + '%';
+                }
+            });
+        }, 5000);
+    </script>
+</body>
+</html> 

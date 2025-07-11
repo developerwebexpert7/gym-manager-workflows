@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - GymAuto Manager</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+            color: #333;
+        }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px 0;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .logo {
+            text-align: center;
+            padding: 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 20px;
+        }
+
+        .logo h2 {
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .nav-menu {
+            list-style: none;
+        }
+
+        .nav-item {
+            margin-bottom: 5px;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 12px 25px;
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background: rgba(255,255,255,0.1);
+            color: white;
+            border-left-color: #ffd700;
+        }
+
+        .nav-link i {
+            margin-right: 12px;
+            width: 20px;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: 250px;
+            padding: 20px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            color: #2c3e50;
+            font-size: 28px;
+            font-weight: 600;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 15px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #f8f9fa;
+            color: #6c757d;
+            border: 1px solid #dee2e6;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        /* Settings Layout */
+        .settings-container {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 25px;
+        }
+
+        /* Settings Navigation */
+        .settings-nav {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            height: fit-content;
+        }
+
+        .settings-nav h3 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .settings-menu {
+            list-style: none;
+        }
+
+        .settings-item {
+            margin-bottom: 5px;
+        }
+
+        .settings-link {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            color: #6c757d;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+
+        .settings-link:hover, .settings-link.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .settings-link i {
+            margin-right: 10px;
+            width: 16px;
+        }
+
+        /* Settings Content */
+        .settings-content {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .settings-section {
+            margin-bottom: 40px;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f1f3f4;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #495057;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .form-textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        /* Toggle Switch */
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: #667eea;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        .toggle-group {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #f1f3f4;
+        }
+
+        .toggle-group:last-child {
+            border-bottom: none;
+        }
+
+        .toggle-label {
+            font-weight: 500;
+            color: #495057;
+        }
+
+        .toggle-description {
+            font-size: 13px;
+            color: #6c757d;
+            margin-top: 5px;
+        }
+
+        /* Select Dropdown */
+        .select-wrapper {
+            position: relative;
+        }
+
+        .select-wrapper::after {
+            content: '▼';
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            pointer-events: none;
+            color: #6c757d;
+            font-size: 12px;
+        }
+
+        /* File Upload */
+        .file-upload {
+            border: 2px dashed #dee2e6;
+            border-radius: 8px;
+            padding: 30px;
+            text-align: center;
+            transition: border-color 0.3s ease;
+        }
+
+        .file-upload:hover {
+            border-color: #667eea;
+        }
+
+        .file-upload i {
+            font-size: 48px;
+            color: #6c757d;
+            margin-bottom: 15px;
+        }
+
+        .file-upload p {
+            color: #6c757d;
+            margin-bottom: 10px;
+        }
+
+        .file-upload input[type="file"] {
+            display: none;
+        }
+
+        /* Color Picker */
+        .color-picker {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .color-option {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .color-option.active {
+            border-color: #667eea;
+            transform: scale(1.1);
+        }
+
+        .color-primary { background: #667eea; }
+        .color-success { background: #28a745; }
+        .color-warning { background: #ffc107; }
+        .color-danger { background: #dc3545; }
+        .color-info { background: #17a2b8; }
+
+        /* Billing Section */
+        .billing-card {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .billing-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .billing-title {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .billing-status {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .status-active {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .billing-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            font-size: 14px;
+        }
+
+        .billing-detail {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .billing-label {
+            color: #6c757d;
+        }
+
+        .billing-value {
+            font-weight: 500;
+            color: #2c3e50;
+        }
+
+        /* Danger Zone */
+        .danger-zone {
+            border: 1px solid #f8d7da;
+            border-radius: 8px;
+            padding: 20px;
+            background: #f8d7da;
+        }
+
+        .danger-zone h4 {
+            color: #721c24;
+            margin-bottom: 15px;
+        }
+
+        .danger-zone p {
+            color: #721c24;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c82333;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .settings-container {
+                grid-template-columns: 1fr;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="logo">
+                <h2>GymAuto</h2>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="02-manager-dashboard.html" class="nav-link">
+                        <i>📊</i> Dashboard
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="03-member-management.html" class="nav-link">
+                        <i>👥</i> Members
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="04-class-management.html" class="nav-link">
+                        <i>🏋️</i> Classes
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="05-staff-management.html" class="nav-link">
+                        <i>👨‍💼</i> Staff
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="06-payment-reports.html" class="nav-link">
+                        <i>💰</i> Payments
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="07-settings.html" class="nav-link active">
+                        <i>⚙️</i> Settings
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="header">
+                <h1>Settings</h1>
+                <div class="header-actions">
+                    <button class="btn btn-secondary">Reset to Default</button>
+                    <button class="btn btn-primary">Save Changes</button>
+                </div>
+            </div>
+
+            <div class="settings-container">
+                <!-- Settings Navigation -->
+                <div class="settings-nav">
+                    <h3>Settings</h3>
+                    <ul class="settings-menu">
+                        <li class="settings-item">
+                            <a href="#gym-profile" class="settings-link active">
+                                <i>🏢</i> Gym Profile
+                            </a>
+                        </li>
+                        <li class="settings-item">
+                            <a href="#billing" class="settings-link">
+                                <i>💳</i> Billing & Plans
+                            </a>
+                        </li>
+                        <li class="settings-item">
+                            <a href="#notifications" class="settings-link">
+                                <i>🔔</i> Notifications
+                            </a>
+                        </li>
+                        <li class="settings-item">
+                            <a href="#appearance" class="settings-link">
+                                <i>🎨</i> Appearance
+                            </a>
+                        </li>
+                        <li class="settings-item">
+                            <a href="#security" class="settings-link">
+                                <i>🔒</i> Security
+                            </a>
+                        </li>
+                        <li class="settings-item">
+                            <a href="#integrations" class="settings-link">
+                                <i>🔗</i> Integrations
+                            </a>
+                        </li>
+                        <li class="settings-item">
+                            <a href="#advanced" class="settings-link">
+                                <i>⚙️</i> Advanced
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Settings Content -->
+                <div class="settings-content">
+                    <!-- Gym Profile Section -->
+                    <div class="settings-section" id="gym-profile">
+                        <h2 class="section-title">Gym Profile</h2>
+                        
+                        <div class="form-group">
+                            <label>Gym Logo</label>
+                            <div class="file-upload">
+                                <i>📷</i>
+                                <p>Click to upload or drag and drop</p>
+                                <p>PNG, JPG up to 5MB</p>
+                                <input type="file" accept="image/*">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Gym Name</label>
+                                <input type="text" class="form-control" value="FitLife Gym">
+                            </div>
+                            <div class="form-group">
+                                <label>Gym Type</label>
+                                <div class="select-wrapper">
+                                    <select class="form-control">
+                                        <option>Fitness Center</option>
+                                        <option>CrossFit Box</option>
+                                        <option>Yoga Studio</option>
+                                        <option>Martial Arts</option>
+                                        <option>Swimming Pool</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Description</label>
+                            <textarea class="form-control form-textarea" placeholder="Describe your gym...">Premium fitness facility offering state-of-the-art equipment, personal training, and group classes for all fitness levels.</textarea>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Address</label>
+                                <input type="text" class="form-control" value="123 Fitness Street, Downtown">
+                            </div>
+                            <div class="form-group">
+                                <label>Phone</label>
+                                <input type="tel" class="form-control" value="+1 (555) 123-4567">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" class="form-control" value="info@fitlifegym.com">
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Opening Hours</label>
+                                <input type="text" class="form-control" value="6:00 AM - 10:00 PM">
+                            </div>
+                            <div class="form-group">
+                                <label>Timezone</label>
+                                <div class="select-wrapper">
+                                    <select class="form-control">
+                                        <option>Eastern Time (ET)</option>
+                                        <option>Central Time (CT)</option>
+                                        <option>Mountain Time (MT)</option>
+                                        <option>Pacific Time (PT)</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Billing Section -->
+                    <div class="settings-section" id="billing">
+                        <h2 class="section-title">Billing & Plans</h2>
+                        
+                        <div class="billing-card">
+                            <div class="billing-header">
+                                <span class="billing-title">Current Plan</span>
+                                <span class="billing-status status-active">Active</span>
+                            </div>
+                            <div class="billing-details">
+                                <div class="billing-detail">
+                                    <span class="billing-label">Plan:</span>
+                                    <span class="billing-value">Professional</span>
+                                </div>
+                                <div class="billing-detail">
+                                    <span class="billing-label">Price:</span>
+                                    <span class="billing-value">$99/month</span>
+                                </div>
+                                <div class="billing-detail">
+                                    <span class="billing-label">Next Billing:</span>
+                                    <span class="billing-value">Jan 15, 2025</span>
+                                </div>
+                                <div class="billing-detail">
+                                    <span class="billing-label">Members:</span>
+                                    <span class="billing-value">342/500</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Payment Method</label>
+                            <div class="select-wrapper">
+                                <select class="form-control">
+                                    <option>Visa ending in 4242</option>
+                                    <option>Mastercard ending in 8888</option>
+                                    <option>Add new payment method</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Billing Address</label>
+                            <textarea class="form-control form-textarea">123 Fitness Street, Downtown, NY 10001</textarea>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Tax ID</label>
+                                <input type="text" class="form-control" value="12-3456789">
+                            </div>
+                            <div class="form-group">
+                                <label>Currency</label>
+                                <div class="select-wrapper">
+                                    <select class="form-control">
+                                        <option>USD ($)</option>
+                                        <option>EUR (€)</option>
+                                        <option>GBP (£)</option>
+                                        <option>CAD ($)</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Notifications Section -->
+                    <div class="settings-section" id="notifications">
+                        <h2 class="section-title">Notifications</h2>
+                        
+                        <div class="toggle-group">
+                            <div>
+                                <div class="toggle-label">Email Notifications</div>
+                                <div class="toggle-description">Receive notifications via email</div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="toggle-group">
+                            <div>
+                                <div class="toggle-label">SMS Notifications</div>
+                                <div class="toggle-description">Receive notifications via SMS</div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="toggle-group">
+                            <div>
+                                <div class="toggle-label">New Member Alerts</div>
+                                <div class="toggle-description">Get notified when new members join</div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="toggle-group">
+                            <div>
+                                <div class="toggle-label">Payment Alerts</div>
+                                <div class="toggle-description">Get notified about payment issues</div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="toggle-group">
+                            <div>
+                                <div class="toggle-label">Class Reminders</div>
+                                <div class="toggle-description">Get reminded about upcoming classes</div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="toggle-group">
+                            <div>
+                                <div class="toggle-label">System Updates</div>
+                                <div class="toggle-description">Receive updates about new features</div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Appearance Section -->
+                    <div class="settings-section" id="appearance">
+                        <h2 class="section-title">Appearance</h2>
+                        
+                        <div class="form-group">
+                            <label>Primary Color</label>
+                            <div class="color-picker">
+                                <div class="color-option color-primary active"></div>
+                                <div class="color-option color-success"></div>
+                                <div class="color-option color-warning"></div>
+                                <div class="color-option color-danger"></div>
+                                <div class="color-option color-info"></div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Theme</label>
+                            <div class="select-wrapper">
+                                <select class="form-control">
+                                    <option>Light</option>
+                                    <option>Dark</option>
+                                    <option>Auto</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Language</label>
+                            <div class="select-wrapper">
+                                <select class="form-control">
+                                    <option>English</option>
+                                    <option>Spanish</option>
+                                    <option>French</option>
+                                    <option>German</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Security Section -->
+                    <div class="settings-section" id="security">
+                        <h2 class="section-title">Security</h2>
+                        
+                        <div class="form-group">
+                            <label>Current Password</label>
+                            <input type="password" class="form-control" placeholder="Enter current password">
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>New Password</label>
+                                <input type="password" class="form-control" placeholder="Enter new password">
+                            </div>
+                            <div class="form-group">
+                                <label>Confirm Password</label>
+                                <input type="password" class="form-control" placeholder="Confirm new password">
+                            </div>
+                        </div>
+
+                        <div class="toggle-group">
+                            <div>
+                                <div class="toggle-label">Two-Factor Authentication</div>
+                                <div class="toggle-description">Add an extra layer of security</div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="toggle-group">
+                            <div>
+                                <div class="toggle-label">Session Timeout</div>
+                                <div class="toggle-description">Automatically log out after inactivity</div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Integrations Section -->
+                    <div class="settings-section" id="integrations">
+                        <h2 class="section-title">Integrations</h2>
+                        
+                        <div class="toggle-group">
+                            <div>
+                                <div class="toggle-label">Google Calendar</div>
+                                <div class="toggle-description">Sync classes with Google Calendar</div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="toggle-group">
+                            <div>
+                                <div class="toggle-label">Stripe Payments</div>
+                                <div class="toggle-description">Process payments through Stripe</div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="toggle-group">
+                            <div>
+                                <div class="toggle-label">Mailchimp</div>
+                                <div class="toggle-description">Send email campaigns</div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="toggle-group">
+                            <div>
+                                <div class="toggle-label">Slack</div>
+                                <div class="toggle-description">Send notifications to Slack</div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Advanced Section -->
+                    <div class="settings-section" id="advanced">
+                        <h2 class="section-title">Advanced</h2>
+                        
+                        <div class="form-group">
+                            <label>Data Export</label>
+                            <button class="btn btn-secondary">Export All Data</button>
+                        </div>
+
+                        <div class="form-group">
+                            <label>API Key</label>
+                            <input type="text" class="form-control" value="gym_auto_sk_live_123456789" readonly>
+                        </div>
+
+                        <div class="toggle-group">
+                            <div>
+                                <div class="toggle-label">Debug Mode</div>
+                                <div class="toggle-description">Enable detailed logging</div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="toggle-group">
+                            <div>
+                                <div class="toggle-label">Analytics</div>
+                                <div class="toggle-description">Share usage data for improvements</div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+
+                        <!-- Danger Zone -->
+                        <div class="danger-zone">
+                            <h4>⚠️ Danger Zone</h4>
+                            <p>These actions cannot be undone. Please be careful.</p>
+                            <button class="btn btn-danger">Delete Gym Account</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html> 

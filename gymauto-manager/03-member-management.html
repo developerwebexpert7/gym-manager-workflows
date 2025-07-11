@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GymAuto - Member Management</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+            min-height: 100vh;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+        }
+        
+        .manager-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .manager-avatar {
+            width: 50px;
+            height: 50px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 18px;
+        }
+        
+        .manager-details h2 {
+            font-size: 18px;
+            margin-bottom: 2px;
+        }
+        
+        .manager-details p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .back-btn {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .back-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+        
+        .sidebar {
+            width: 250px;
+            background: white;
+            height: calc(100vh - 90px);
+            position: fixed;
+            left: 0;
+            top: 90px;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            overflow-y: auto;
+        }
+        
+        .nav-item {
+            padding: 15px 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-left: 3px solid transparent;
+        }
+        
+        .nav-item:hover {
+            background: #f8f9ff;
+            border-left-color: #667eea;
+        }
+        
+        .nav-item.active {
+            background: #f8f9ff;
+            border-left-color: #667eea;
+            color: #667eea;
+        }
+        
+        .nav-icon {
+            font-size: 18px;
+            width: 24px;
+        }
+        
+        .main-content {
+            margin-left: 250px;
+            padding: 30px;
+        }
+        
+        .page-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 30px;
+        }
+        
+        .page-title {
+            font-size: 28px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .add-member-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .add-member-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+        
+        .filters-section {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+        
+        .filters-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        
+        .filters-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .search-box {
+            position: relative;
+            flex: 1;
+            max-width: 400px;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 12px 16px 12px 45px;
+            border: 2px solid #e1e5e9;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+            font-size: 18px;
+        }
+        
+        .filter-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .filter-tab {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+            color: #666;
+            border: none;
+        }
+        
+        .filter-tab.active {
+            background: #667eea;
+            color: white;
+        }
+        
+        .filter-tab:hover {
+            background: #667eea;
+            color: white;
+        }
+        
+        .members-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 20px;
+        }
+        
+        .member-card {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .member-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.15);
+        }
+        
+        .member-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .member-avatar {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 20px;
+        }
+        
+        .member-info h3 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        
+        .member-info p {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+        
+        .member-status {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .member-status.active {
+            background: #dcfce7;
+            color: #166534;
+        }
+        
+        .member-status.expired {
+            background: #fef2f2;
+            color: #dc2626;
+        }
+        
+        .member-status.pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        
+        .member-details {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .detail-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .detail-icon {
+            color: #667eea;
+            font-size: 16px;
+        }
+        
+        .member-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .action-btn {
+            flex: 1;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s ease;
+        }
+        
+        .action-btn.primary {
+            background: #667eea;
+            color: white;
+        }
+        
+        .action-btn.secondary {
+            background: #f8f9fa;
+            color: #666;
+            border: 1px solid #e1e5e9;
+        }
+        
+        .action-btn:hover {
+            transform: translateY(-1px);
+        }
+        
+        .stats-section {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 24px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .annotations {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            background: rgba(255,255,255,0.95);
+            padding: 20px;
+            border-radius: 8px;
+            font-size: 12px;
+            max-width: 280px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        
+        .annotation {
+            margin-bottom: 10px;
+            color: #333;
+        }
+        
+        .annotation strong {
+            color: #667eea;
+        }
+    </style>
+</head>
+<body>
+    <div class="annotations">
+        <div class="annotation"><strong>🔍 Advanced Search:</strong> Find members quickly</div>
+        <div class="annotation"><strong>📊 Member Stats:</strong> Real-time metrics</div>
+        <div class="annotation"><strong>⚡ Quick Actions:</strong> Edit, suspend, renew</div>
+        <div class="annotation"><strong>📱 Mobile Responsive:</strong> Works on all devices</div>
+    </div>
+
+    <div class="header">
+        <div class="header-left">
+            <div class="logo">GymAuto</div>
+            <div class="manager-info">
+                <div class="manager-avatar">JD</div>
+                <div class="manager-details">
+                    <h2>John Davis</h2>
+                    <p>Gym Manager</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="header-right">
+            <button class="back-btn" onclick="goBack()">← Back to Dashboard</button>
+        </div>
+    </div>
+
+    <nav class="sidebar">
+        <div class="logo">
+            <h2>GymAuto</h2>
+        </div>
+        <ul class="nav-menu">
+            <li class="nav-item">
+                <a href="02-manager-dashboard.html" class="nav-link">
+                    <i>📊</i> Dashboard
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="03-member-management.html" class="nav-link">
+                    <i>👥</i> Members
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="04-class-management.html" class="nav-link">
+                    <i>🏋️</i> Classes
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="05-staff-management.html" class="nav-link">
+                    <i>👨‍💼</i> Staff
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="06-payment-reports.html" class="nav-link active">
+                    <i>💰</i> Payments
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="07-settings.html" class="nav-link">
+                    <i>⚙️</i> Settings
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <div class="main-content">
+        <div class="page-header">
+            <div class="page-title">Member Management</div>
+            <button class="add-member-btn" onclick="addMember()">+ Add Member</button>
+        </div>
+
+        <div class="stats-section">
+            <div class="stat-card">
+                <div class="stat-number">1,247</div>
+                <div class="stat-label">Total Members</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">1,189</div>
+                <div class="stat-label">Active Members</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">58</div>
+                <div class="stat-label">Expired Members</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">23</div>
+                <div class="stat-label">New This Month</div>
+            </div>
+        </div>
+
+        <div class="filters-section">
+            <div class="filters-header">
+                <div class="filters-title">Search & Filter</div>
+                <div class="search-box">
+                    <div class="search-icon">🔍</div>
+                    <input type="text" class="search-input" placeholder="Search members by name, email, or phone..." onkeyup="searchMembers(this.value)">
+                </div>
+            </div>
+            
+            <div class="filter-tabs">
+                <button class="filter-tab active" onclick="filterMembers('all')">All Members</button>
+                <button class="filter-tab" onclick="filterMembers('active')">Active</button>
+                <button class="filter-tab" onclick="filterMembers('expired')">Expired</button>
+                <button class="filter-tab" onclick="filterMembers('new')">New</button>
+                <button class="filter-tab" onclick="filterMembers('premium')">Premium</button>
+            </div>
+        </div>
+
+        <div class="members-grid">
+            <div class="member-card" onclick="viewMember(this)">
+                <div class="member-header">
+                    <div class="member-avatar">JS</div>
+                    <div class="member-info">
+                        <h3>John Smith</h3>
+                        <p>john.smith@email.com</p>
+                        <div class="member-status active">Active</div>
+                    </div>
+                </div>
+                
+                <div class="member-details">
+                    <div class="detail-item">
+                        <div class="detail-icon">📱</div>
+                        <div>+1 (555) 123-4567</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-icon">🎯</div>
+                        <div>Premium Plan</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-icon">📅</div>
+                        <div>Joined: Dec 2023</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-icon">💰</div>
+                        <div>$99/month</div>
+                    </div>
+                </div>
+                
+                <div class="member-actions">
+                    <button class="action-btn primary" onclick="editMember(event)">Edit</button>
+                    <button class="action-btn secondary" onclick="viewHistory(event)">History</button>
+                    <button class="action-btn secondary" onclick="sendMessage(event)">Message</button>
+                </div>
+            </div>
+            
+            <div class="member-card" onclick="viewMember(this)">
+                <div class="member-header">
+                    <div class="member-avatar">MJ</div>
+                    <div class="member-info">
+                        <h3>Mary Johnson</h3>
+                        <p>mary.johnson@email.com</p>
+                        <div class="member-status active">Active</div>
+                    </div>
+                </div>
+                
+                <div class="member-details">
+                    <div class="detail-item">
+                        <div class="detail-icon">📱</div>
+                        <div>+1 (555) 234-5678</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-icon">🎯</div>
+                        <div>Basic Plan</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-icon">📅</div>
+                        <div>Joined: Nov 2023</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-icon">💰</div>
+                        <div>$49/month</div>
+                    </div>
+                </div>
+                
+                <div class="member-actions">
+                    <button class="action-btn primary" onclick="editMember(event)">Edit</button>
+                    <button class="action-btn secondary" onclick="viewHistory(event)">History</button>
+                    <button class="action-btn secondary" onclick="sendMessage(event)">Message</button>
+                </div>
+            </div>
+            
+            <div class="member-card" onclick="viewMember(this)">
+                <div class="member-header">
+                    <div class="member-avatar">RD</div>
+                    <div class="member-info">
+                        <h3>Robert Davis</h3>
+                        <p>robert.davis@email.com</p>
+                        <div class="member-status expired">Expired</div>
+                    </div>
+                </div>
+                
+                <div class="member-details">
+                    <div class="detail-item">
+                        <div class="detail-icon">📱</div>
+                        <div>+1 (555) 345-6789</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-icon">🎯</div>
+                        <div>Premium Plan</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-icon">📅</div>
+                        <div>Joined: Oct 2023</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-icon">💰</div>
+                        <div>$99/month</div>
+                    </div>
+                </div>
+                
+                <div class="member-actions">
+                    <button class="action-btn primary" onclick="renewMembership(event)">Renew</button>
+                    <button class="action-btn secondary" onclick="viewHistory(event)">History</button>
+                    <button class="action-btn secondary" onclick="sendMessage(event)">Message</button>
+                </div>
+            </div>
+            
+            <div class="member-card" onclick="viewMember(this)">
+                <div class="member-header">
+                    <div class="member-avatar">SW</div>
+                    <div class="member-info">
+                        <h3>Sarah Wilson</h3>
+                        <p>sarah.wilson@email.com</p>
+                        <div class="member-status active">Active</div>
+                    </div>
+                </div>
+                
+                <div class="member-details">
+                    <div class="detail-item">
+                        <div class="detail-icon">📱</div>
+                        <div>+1 (555) 456-7890</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-icon">🎯</div>
+                        <div>VIP Plan</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-icon">📅</div>
+                        <div>Joined: Dec 2024</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-icon">💰</div>
+                        <div>$149/month</div>
+                    </div>
+                </div>
+                
+                <div class="member-actions">
+                    <button class="action-btn primary" onclick="editMember(event)">Edit</button>
+                    <button class="action-btn secondary" onclick="viewHistory(event)">History</button>
+                    <button class="action-btn secondary" onclick="sendMessage(event)">Message</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function goBack() {
+            window.location.href = '02-manager-dashboard.html';
+        }
+        
+        function switchTab(tab) {
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            event.target.closest('.nav-item').classList.add('active');
+            
+            // In real app, load different sections
+            console.log('Switching to tab:', tab);
+        }
+        
+        function searchMembers(query) {
+            // In real app, filter members based on search query
+            console.log('Searching for:', query);
+        }
+        
+        function filterMembers(filter) {
+            document.querySelectorAll('.filter-tab').forEach(tab => tab.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // In real app, filter members based on selected filter
+            console.log('Filtering by:', filter);
+        }
+        
+        function viewMember(card) {
+            // In real app, show detailed member information
+            console.log('Viewing member details');
+        }
+        
+        function addMember() {
+            // In real app, open add member form
+            console.log('Adding new member');
+        }
+        
+        function editMember(event) {
+            event.stopPropagation();
+            // In real app, open edit member form
+            console.log('Editing member');
+        }
+        
+        function viewHistory(event) {
+            event.stopPropagation();
+            // In real app, show member history
+            console.log('Viewing member history');
+        }
+        
+        function sendMessage(event) {
+            event.stopPropagation();
+            // In real app, open message form
+            console.log('Sending message to member');
+        }
+        
+        function renewMembership(event) {
+            event.stopPropagation();
+            // In real app, open renewal form
+            console.log('Renewing membership');
+        }
+    </script>
+</body>
+</html> 

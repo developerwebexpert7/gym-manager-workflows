@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GymAuto - Manager Onboarding</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px 0;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            max-width: 500px;
+            width: 100%;
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .header p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+        
+        .progress-bar {
+            background: rgba(255,255,255,0.2);
+            height: 6px;
+            border-radius: 3px;
+            margin-top: 20px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            background: white;
+            height: 100%;
+            width: 20%;
+            transition: width 0.5s ease;
+        }
+        
+        .step-indicator {
+            display: flex;
+            justify-content: center;
+            margin-top: 15px;
+            gap: 8px;
+        }
+        
+        .step-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .step-dot.active {
+            background: white;
+            transform: scale(1.2);
+        }
+        
+        .step-dot.completed {
+            background: #10b981;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .step {
+            display: none;
+        }
+        
+        .step.active {
+            display: block;
+        }
+        
+        .step-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        
+        .step-subtitle {
+            font-size: 16px;
+            color: #666;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #555;
+            margin-bottom: 8px;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid #e1e5e9;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        
+        .gym-type-cards {
+            display: grid;
+            gap: 15px;
+        }
+        
+        .gym-type-card {
+            border: 2px solid #e1e5e9;
+            border-radius: 12px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .gym-type-card:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.15);
+        }
+        
+        .gym-type-card.selected {
+            border-color: #667eea;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .gym-type-icon {
+            width: 50px;
+            height: 50px;
+            background: #667eea;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+        }
+        
+        .gym-type-card.selected .gym-type-icon {
+            background: white;
+            color: #667eea;
+        }
+        
+        .gym-type-info h3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .gym-type-info p {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+        
+        .gym-type-card.selected .gym-type-info p {
+            opacity: 0.9;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .feature-icon {
+            color: #667eea;
+            font-size: 16px;
+        }
+        
+        .plan-cards {
+            display: grid;
+            gap: 15px;
+        }
+        
+        .plan-card {
+            border: 2px solid #e1e5e9;
+            border-radius: 12px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .plan-card:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.15);
+        }
+        
+        .plan-card.selected {
+            border-color: #667eea;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .plan-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+        
+        .plan-name {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .plan-price {
+            font-size: 24px;
+            font-weight: 700;
+        }
+        
+        .plan-features {
+            list-style: none;
+            margin-bottom: 15px;
+        }
+        
+        .plan-features li {
+            padding: 5px 0;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .plan-features li::before {
+            content: "✓";
+            color: #10b981;
+            font-weight: bold;
+        }
+        
+        .plan-card.selected .plan-features li::before {
+            color: white;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 15px 30px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+        
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .btn.secondary {
+            background: #f8f9fa;
+            color: #666;
+            border: 2px solid #e1e5e9;
+        }
+        
+        .btn.secondary:hover {
+            background: #e9ecef;
+        }
+        
+        .success-step {
+            text-align: center;
+            padding: 40px 20px;
+        }
+        
+        .success-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+        
+        .success-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .success-desc {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 30px;
+            line-height: 1.5;
+        }
+        
+        .next-steps {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        
+        .next-steps h4 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .next-steps ul {
+            list-style: none;
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .next-steps li {
+            padding: 5px 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .next-steps li::before {
+            content: "→";
+            color: #667eea;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>GymAuto</h1>
+            <p>Manager Onboarding</p>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div class="step-indicator">
+                <div class="step-dot active" id="step1-dot"></div>
+                <div class="step-dot" id="step2-dot"></div>
+                <div class="step-dot" id="step3-dot"></div>
+                <div class="step-dot" id="step4-dot"></div>
+                <div class="step-dot" id="step5-dot"></div>
+            </div>
+        </div>
+
+        <div class="content">
+            <!-- Step 1: Basic Information -->
+            <div class="step active" id="step1">
+                <div class="step-title">Welcome to GymAuto!</div>
+                <div class="step-subtitle">Let's get your gym set up in minutes</div>
+                
+                <div class="form-group">
+                    <label class="form-label">Full Name</label>
+                    <input type="text" class="form-input" placeholder="Enter your full name">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Email Address</label>
+                    <input type="email" class="form-input" placeholder="your@email.com">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Phone Number</label>
+                    <input type="tel" class="form-input" placeholder="+1 (555) 123-4567">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Gym Name</label>
+                    <input type="text" class="form-input" placeholder="Enter your gym name">
+                </div>
+                
+                <button class="btn" onclick="nextStep()">Continue</button>
+            </div>
+
+            <!-- Step 2: Gym Type -->
+            <div class="step" id="step2">
+                <div class="step-title">What type of gym do you run?</div>
+                <div class="step-subtitle">This helps us customize your experience</div>
+                
+                <div class="gym-type-cards">
+                    <div class="gym-type-card" onclick="selectGymType(this, 'fitness')">
+                        <div class="gym-type-icon">💪</div>
+                        <div class="gym-type-info">
+                            <h3>Fitness Center</h3>
+                            <p>Traditional gym with equipment and classes</p>
+                        </div>
+                    </div>
+                    
+                    <div class="gym-type-card" onclick="selectGymType(this, 'yoga')">
+                        <div class="gym-type-icon">🧘</div>
+                        <div class="gym-type-info">
+                            <h3>Yoga Studio</h3>
+                            <p>Specialized in yoga and meditation classes</p>
+                        </div>
+                    </div>
+                    
+                    <div class="gym-type-card" onclick="selectGymType(this, 'crossfit')">
+                        <div class="gym-type-icon">🏋️</div>
+                        <div class="gym-type-info">
+                            <h3>CrossFit Box</h3>
+                            <p>High-intensity functional fitness</p>
+                        </div>
+                    </div>
+                    
+                    <div class="gym-type-card" onclick="selectGymType(this, 'boutique')">
+                        <div class="gym-type-icon">⭐</div>
+                        <div class="gym-type-info">
+                            <h3>Boutique Studio</h3>
+                            <p>Specialized classes and personal training</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="display: flex; gap: 10px; margin-top: 20px;">
+                    <button class="btn secondary" onclick="prevStep()">Back</button>
+                    <button class="btn" onclick="nextStep()">Continue</button>
+                </div>
+            </div>
+
+            <!-- Step 3: Gym Details -->
+            <div class="step" id="step3">
+                <div class="step-title">Tell us about your gym</div>
+                <div class="step-subtitle">This helps us set up the right features for you</div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Gym Address</label>
+                        <input type="text" class="form-input" placeholder="Street address">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">City</label>
+                        <input type="text" class="form-input" placeholder="City">
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">State</label>
+                        <input type="text" class="form-input" placeholder="State">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">ZIP Code</label>
+                        <input type="text" class="form-input" placeholder="ZIP">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Gym Size</label>
+                    <select class="form-input">
+                        <option>Select gym size</option>
+                        <option>Small (1-50 members)</option>
+                        <option>Medium (51-200 members)</option>
+                        <option>Large (201-500 members)</option>
+                        <option>Enterprise (500+ members)</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Number of Staff</label>
+                    <input type="number" class="form-input" placeholder="How many staff members?">
+                </div>
+                
+                <div style="display: flex; gap: 10px; margin-top: 20px;">
+                    <button class="btn secondary" onclick="prevStep()">Back</button>
+                    <button class="btn" onclick="nextStep()">Continue</button>
+                </div>
+            </div>
+
+            <!-- Step 4: Features Selection -->
+            <div class="step" id="step4">
+                <div class="step-title">Choose your features</div>
+                <div class="step-subtitle">Select the features you need for your gym</div>
+                
+                <div class="features-grid">
+                    <div class="feature-item">
+                        <div class="feature-icon">👥</div>
+                        <div>Member Management</div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">📅</div>
+                        <div>Class Scheduling</div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">💰</div>
+                        <div>Payment Processing</div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">📊</div>
+                        <div>Analytics Dashboard</div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">📱</div>
+                        <div>Mobile App</div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">🔐</div>
+                        <div>Access Control</div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">📋</div>
+                        <div>Equipment Tracking</div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">🎨</div>
+                        <div>White-Label Branding</div>
+                    </div>
+                </div>
+                
+                <div style="display: flex; gap: 10px; margin-top: 20px;">
+                    <button class="btn secondary" onclick="prevStep()">Back</button>
+                    <button class="btn" onclick="nextStep()">Continue</button>
+                </div>
+            </div>
+
+            <!-- Step 5: Plan Selection -->
+            <div class="step" id="step5">
+                <div class="step-title">Choose your plan</div>
+                <div class="step-subtitle">Start with a plan that fits your needs</div>
+                
+                <div class="plan-cards">
+                    <div class="plan-card" onclick="selectPlan(this, 'starter')">
+                        <div class="plan-header">
+                            <div class="plan-name">Starter</div>
+                            <div class="plan-price">$49/mo</div>
+                        </div>
+                        <ul class="plan-features">
+                            <li>Up to 100 members</li>
+                            <li>Basic member management</li>
+                            <li>Class scheduling</li>
+                            <li>Email support</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="plan-card selected" onclick="selectPlan(this, 'professional')">
+                        <div class="plan-header">
+                            <div class="plan-name">Professional</div>
+                            <div class="plan-price">$99/mo</div>
+                        </div>
+                        <ul class="plan-features">
+                            <li>Up to 500 members</li>
+                            <li>Advanced analytics</li>
+                            <li>Mobile app access</li>
+                            <li>Priority support</li>
+                            <li>White-label branding</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="plan-card" onclick="selectPlan(this, 'enterprise')">
+                        <div class="plan-header">
+                            <div class="plan-name">Enterprise</div>
+                            <div class="plan-price">$199/mo</div>
+                        </div>
+                        <ul class="plan-features">
+                            <li>Unlimited members</li>
+                            <li>Multi-location support</li>
+                            <li>Custom integrations</li>
+                            <li>Dedicated support</li>
+                            <li>Advanced security</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div style="display: flex; gap: 10px; margin-top: 20px;">
+                    <button class="btn secondary" onclick="prevStep()">Back</button>
+                    <button class="btn" onclick="nextStep()">Complete Setup</button>
+                </div>
+            </div>
+
+            <!-- Success Step -->
+            <div class="step" id="step6">
+                <div class="success-step">
+                    <div class="success-icon">🎉</div>
+                    <div class="success-title">Welcome to GymAuto!</div>
+                    <div class="success-desc">
+                        Your gym is now set up and ready to go. You can start managing members, 
+                        scheduling classes, and tracking your gym's performance right away.
+                    </div>
+                    
+                    <div class="next-steps">
+                        <h4>What's next?</h4>
+                        <ul>
+                            <li>Invite your staff members</li>
+                            <li>Set up your first classes</li>
+                            <li>Import your member list</li>
+                            <li>Customize your branding</li>
+                        </ul>
+                    </div>
+                    
+                    <button class="btn" onclick="goToDashboard()">Go to Dashboard</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentStep = 1;
+        const totalSteps = 6;
+        
+        function updateProgress() {
+            const progress = (currentStep / totalSteps) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+            
+            // Update step indicators
+            for (let i = 1; i <= 5; i++) {
+                const dot = document.getElementById(`step${i}-dot`);
+                if (i < currentStep) {
+                    dot.classList.add('completed');
+                    dot.classList.remove('active');
+                } else if (i === currentStep) {
+                    dot.classList.add('active');
+                    dot.classList.remove('completed');
+                } else {
+                    dot.classList.remove('active', 'completed');
+                }
+            }
+        }
+        
+        function showStep(step) {
+            document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+            document.getElementById(`step${step}`).classList.add('active');
+        }
+        
+        function nextStep() {
+            if (currentStep < totalSteps) {
+                currentStep++;
+                showStep(currentStep);
+                updateProgress();
+            }
+        }
+        
+        function prevStep() {
+            if (currentStep > 1) {
+                currentStep--;
+                showStep(currentStep);
+                updateProgress();
+            }
+        }
+        
+        function selectGymType(card, type) {
+            document.querySelectorAll('.gym-type-card').forEach(c => c.classList.remove('selected'));
+            card.classList.add('selected');
+        }
+        
+        function selectPlan(card, plan) {
+            document.querySelectorAll('.plan-card').forEach(c => c.classList.remove('selected'));
+            card.classList.add('selected');
+        }
+        
+        function goToDashboard() {
+            window.location.href = '02-manager-dashboard.html';
+        }
+        
+        // Initialize
+        updateProgress();
+    </script>
+</body>
+</html> 

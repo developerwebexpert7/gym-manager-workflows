@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>White-Label Editor</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+            min-height: 100vh;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: 600;
+        }
+        
+        .admin-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .admin-avatar {
+            width: 50px;
+            height: 50px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 18px;
+        }
+        
+        .admin-details h2 {
+            font-size: 18px;
+            margin-bottom: 2px;
+        }
+        
+        .admin-details p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .save-btn {
+            background: rgba(255,255,255,0.2);
+            border: 2px solid rgba(255,255,255,0.3);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .save-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 30px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+        
+        .editor-section {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+        
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .section-icon {
+            width: 32px;
+            height: 32px;
+            background: #667eea;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 16px;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            color: #555;
+            margin-bottom: 8px;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .logo-upload {
+            border: 2px dashed #e1e5e9;
+            border-radius: 12px;
+            padding: 40px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .logo-upload:hover {
+            border-color: #667eea;
+            background: #f8f9ff;
+        }
+        
+        .logo-upload.dragover {
+            border-color: #667eea;
+            background: #f8f9ff;
+        }
+        
+        .upload-icon {
+            font-size: 48px;
+            color: #999;
+            margin-bottom: 15px;
+        }
+        
+        .upload-text {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 10px;
+        }
+        
+        .upload-hint {
+            font-size: 12px;
+            color: #999;
+        }
+        
+        .color-picker {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        
+        .color-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .color-item:hover {
+            border-color: #667eea;
+        }
+        
+        .color-item.selected {
+            border-color: #667eea;
+            background: #f8f9ff;
+        }
+        
+        .color-preview {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border: 2px solid #e1e5e9;
+        }
+        
+        .color-info h4 {
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 2px;
+        }
+        
+        .color-info p {
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .custom-color {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .custom-color input[type="color"] {
+            width: 40px;
+            height: 40px;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        
+        .custom-color input[type="text"] {
+            flex: 1;
+            padding: 8px 12px;
+            border: 2px solid #e1e5e9;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        
+        .domain-setup {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .domain-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e1e5e9;
+        }
+        
+        .domain-item:last-child {
+            border-bottom: none;
+        }
+        
+        .domain-info h4 {
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 2px;
+        }
+        
+        .domain-info p {
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .domain-status {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 500;
+        }
+        
+        .domain-status.active {
+            background: #dcfce7;
+            color: #166534;
+        }
+        
+        .domain-status.pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        
+        .preview-section {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+        
+        .preview-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        
+        .preview-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .preview-tabs {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .preview-tab {
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+            color: #666;
+        }
+        
+        .preview-tab.active {
+            background: #667eea;
+            color: white;
+        }
+        
+        .preview-frame {
+            border: 2px solid #e1e5e9;
+            border-radius: 12px;
+            height: 500px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .preview-content {
+            height: 100%;
+            background: white;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .preview-logo {
+            font-size: 32px;
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+        
+        .preview-text {
+            font-size: 16px;
+            color: #666;
+            text-align: center;
+            line-height: 1.5;
+        }
+        
+        .preview-colors {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .preview-color {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border: 2px solid #e1e5e9;
+        }
+        
+        .annotations {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            background: rgba(255,255,255,0.95);
+            padding: 20px;
+            border-radius: 8px;
+            font-size: 12px;
+            max-width: 280px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        
+        .annotation {
+            margin-bottom: 10px;
+            color: #333;
+        }
+        
+        .annotation strong {
+            color: #667eea;
+        }
+        
+        .brand-kit {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .brand-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .brand-icon {
+            width: 40px;
+            height: 40px;
+            background: white;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            border: 1px solid #e1e5e9;
+        }
+        
+        .brand-info h4 {
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 2px;
+        }
+        
+        .brand-info p {
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .brand-download {
+            margin-left: auto;
+            padding: 6px 12px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="annotations">
+        <div class="annotation"><strong>🎨 Brand Control:</strong> Complete customization</div>
+        <div class="annotation"><strong>📱 Multi-Platform:</strong> Mobile & web preview</div>
+        <div class="annotation"><strong>🔗 Domain Setup:</strong> Custom domain management</div>
+        <div class="annotation"><strong>📦 Brand Kit:</strong> Downloadable assets</div>
+    </div>
+
+    <div class="header">
+        <div class="header-left">
+            <div class="logo">White-Label Admin</div>
+            <div class="admin-info">
+                <div class="admin-avatar">WL</div>
+                <div class="admin-details">
+                    <h2>White-Label Admin</h2>
+                    <p>Brand Management</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="header-right">
+            <button class="save-btn" onclick="saveChanges()">Save Changes</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="editor-section">
+            <div class="section-title">
+                <div class="section-icon">🎨</div>
+                Brand Customization
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Gym Name</label>
+                <input type="text" class="form-input" value="FitLife Gym" placeholder="Enter gym name" onkeyup="updatePreview()">
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Logo Upload</label>
+                <div class="logo-upload" onclick="uploadLogo()" ondrop="handleDrop(event)" ondragover="handleDragOver(event)">
+                    <div class="upload-icon">📁</div>
+                    <div class="upload-text">Click to upload or drag and drop</div>
+                    <div class="upload-hint">PNG, JPG up to 5MB</div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Brand Colors</label>
+                <div class="color-picker">
+                    <div class="color-item" onclick="selectColor(this, '#667eea')">
+                        <div class="color-preview" style="background: #667eea;"></div>
+                        <div class="color-info">
+                            <h4>Primary Blue</h4>
+                            <p>#667eea</p>
+                        </div>
+                    </div>
+                    
+                    <div class="color-item" onclick="selectColor(this, '#10b981')">
+                        <div class="color-preview" style="background: #10b981;"></div>
+                        <div class="color-info">
+                            <h4>Success Green</h4>
+                            <p>#10b981</p>
+                        </div>
+                    </div>
+                    
+                    <div class="color-item" onclick="selectColor(this, '#f59e0b')">
+                        <div class="color-preview" style="background: #f59e0b;"></div>
+                        <div class="color-info">
+                            <h4>Warning Orange</h4>
+                            <p>#f59e0b</p>
+                        </div>
+                    </div>
+                    
+                    <div class="color-item" onclick="selectColor(this, '#ef4444')">
+                        <div class="color-preview" style="background: #ef4444;"></div>
+                        <div class="color-info">
+                            <h4>Error Red</h4>
+                            <p>#ef4444</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="custom-color">
+                    <input type="color" value="#667eea" onchange="updateCustomColor(this.value)">
+                    <input type="text" placeholder="Custom color code" value="#667eea">
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Domain Setup</label>
+                <div class="domain-setup">
+                    <div class="domain-item">
+                        <div class="domain-info">
+                            <h4>fitlife-gym.com</h4>
+                            <p>Primary domain</p>
+                        </div>
+                        <div class="domain-status active">Active</div>
+                    </div>
+                    
+                    <div class="domain-item">
+                        <div class="domain-info">
+                            <h4>www.fitlife-gym.com</h4>
+                            <p>Redirect domain</p>
+                        </div>
+                        <div class="domain-status active">Active</div>
+                    </div>
+                    
+                    <div class="domain-item">
+                        <div class="domain-info">
+                            <h4>app.fitlife-gym.com</h4>
+                            <p>Mobile app domain</p>
+                        </div>
+                        <div class="domain-status pending">Pending</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Brand Kit</label>
+                <div class="brand-kit">
+                    <div class="brand-item">
+                        <div class="brand-icon">🎨</div>
+                        <div class="brand-info">
+                            <h4>Logo Package</h4>
+                            <p>High-res logos in all formats</p>
+                        </div>
+                        <button class="brand-download" onclick="downloadAsset('logo')">Download</button>
+                    </div>
+                    
+                    <div class="brand-item">
+                        <div class="brand-icon">🎯</div>
+                        <div class="brand-info">
+                            <h4>Brand Guidelines</h4>
+                            <p>Color codes and usage rules</p>
+                        </div>
+                        <button class="brand-download" onclick="downloadAsset('guidelines')">Download</button>
+                    </div>
+                    
+                    <div class="brand-item">
+                        <div class="brand-icon">📱</div>
+                        <div class="brand-info">
+                            <h4>App Store Assets</h4>
+                            <p>Icons and screenshots</p>
+                        </div>
+                        <button class="brand-download" onclick="downloadAsset('app-store')">Download</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="preview-section">
+            <div class="preview-header">
+                <div class="preview-title">Live Preview</div>
+                <div class="preview-tabs">
+                    <div class="preview-tab active" onclick="switchPreview('mobile')">📱 Mobile</div>
+                    <div class="preview-tab" onclick="switchPreview('tablet')">📱 Tablet</div>
+                    <div class="preview-tab" onclick="switchPreview('desktop')">💻 Desktop</div>
+                </div>
+            </div>
+            
+            <div class="preview-frame">
+                <div class="preview-content" id="previewContent">
+                    <div class="preview-logo" id="previewLogo">FitLife Gym</div>
+                    <div class="preview-text">
+                        Welcome to your personalized gym experience.<br>
+                        Book classes, track workouts, and achieve your fitness goals.
+                    </div>
+                    <div class="preview-colors">
+                        <div class="preview-color" style="background: #667eea;"></div>
+                        <div class="preview-color" style="background: #10b981;"></div>
+                        <div class="preview-color" style="background: #f59e0b;"></div>
+                        <div class="preview-color" style="background: #ef4444;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function updatePreview() {
+            const gymName = document.querySelector('input[placeholder="Enter gym name"]').value;
+            document.getElementById('previewLogo').textContent = gymName || 'FitLife Gym';
+        }
+        
+        function selectColor(item, color) {
+            document.querySelectorAll('.color-item').forEach(i => i.classList.remove('selected'));
+            item.classList.add('selected');
+            
+            // Update preview colors
+            document.querySelectorAll('.preview-color')[0].style.background = color;
+        }
+        
+        function updateCustomColor(color) {
+            document.querySelector('.custom-color input[type="text"]').value = color;
+            document.querySelectorAll('.preview-color')[0].style.background = color;
+        }
+        
+        function uploadLogo() {
+            // In real app, handle file upload
+            console.log('Uploading logo');
+        }
+        
+        function handleDrop(event) {
+            event.preventDefault();
+            console.log('File dropped');
+        }
+        
+        function handleDragOver(event) {
+            event.preventDefault();
+            event.target.classList.add('dragover');
+        }
+        
+        function switchPreview(device) {
+            document.querySelectorAll('.preview-tab').forEach(tab => tab.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // In real app, switch preview device
+            console.log('Switching to:', device);
+        }
+        
+        function saveChanges() {
+            // In real app, save all changes
+            console.log('Saving changes');
+            alert('Changes saved successfully!');
+        }
+        
+        function downloadAsset(type) {
+            // In real app, download brand assets
+            console.log('Downloading:', type);
+        }
+        
+        // Initialize preview
+        updatePreview();
+    </script>
+</body>
+</html> 

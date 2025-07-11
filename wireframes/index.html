@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gym Management App - Wireframes</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 18px;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+        
+        .header .subtitle {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .wireframes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .wireframe-card {
+            border: 2px solid #e1e5e9;
+            border-radius: 16px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .wireframe-card:hover {
+            border-color: #667eea;
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(102, 126, 234, 0.2);
+        }
+        
+        .wireframe-preview {
+            height: 200px;
+            background: #f8f9fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            color: #667eea;
+            position: relative;
+        }
+        
+        .wireframe-number {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: #667eea;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .wireframe-info {
+            padding: 20px;
+        }
+        
+        .wireframe-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+        
+        .wireframe-desc {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+        
+        .wireframe-meta {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 12px;
+            color: #999;
+        }
+        
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .view-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 20px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 15px;
+            width: 100%;
+        }
+        
+        .view-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+        
+        .flow-section {
+            background: #f8f9fa;
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .flow-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .flow-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .flow-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+        
+        .flow-icon {
+            font-size: 32px;
+            margin-bottom: 15px;
+        }
+        
+        .flow-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+        
+        .flow-desc {
+            font-size: 12px;
+            color: #666;
+            line-height: 1.4;
+        }
+        
+        .features-section {
+            margin-bottom: 30px;
+        }
+        
+        .features-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        
+        .feature-item {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+        }
+        
+        .feature-icon {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        
+        .feature-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .annotations {
+            background: rgba(255,255,255,0.95);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .annotation-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 15px;
+        }
+        
+        .annotation-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+        
+        .annotation-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .annotation-icon {
+            font-size: 16px;
+            color: #667eea;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Gym Management App</h1>
+            <p>White-Label SaaS Platform Wireframes</p>
+            <div class="subtitle">12 interconnected screens covering all user roles and workflows</div>
+        </div>
+
+        <div class="content">
+            <div class="annotations">
+                <div class="annotation-title">📋 Wireframe Overview</div>
+                <div class="annotation-grid">
+                    <div class="annotation-item">
+                        <div class="annotation-icon">📱</div>
+                        <div>Mobile-first design for members</div>
+                    </div>
+                    <div class="annotation-item">
+                        <div class="annotation-icon">💻</div>
+                        <div>Desktop dashboards for managers</div>
+                    </div>
+                    <div class="annotation-item">
+                        <div class="annotation-icon">🎨</div>
+                        <div>White-label branding system</div>
+                    </div>
+                    <div class="annotation-item">
+                        <div class="annotation-icon">⚡</div>
+                        <div>Real-time data synchronization</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="wireframes-grid">
+                <div class="wireframe-card" onclick="openWireframe('01-role-selection.html')">
+                    <div class="wireframe-preview">
+                        <div class="wireframe-number">01</div>
+                        👥
+                    </div>
+                    <div class="wireframe-info">
+                        <div class="wireframe-title">Role Selection</div>
+                        <div class="wireframe-desc">Entry point for all users with role-based access control and device optimization indicators.</div>
+                        <div class="wireframe-meta">
+                            <div class="meta-item">📱 Mobile</div>
+                            <div class="meta-item">🔐 Auth</div>
+                            <div class="meta-item">⚡ Auto-redirect</div>
+                        </div>
+                        <button class="view-btn">View Wireframe</button>
+                    </div>
+                </div>
+
+                <div class="wireframe-card" onclick="openWireframe('02-member-onboarding.html')">
+                    <div class="wireframe-preview">
+                        <div class="wireframe-number">02</div>
+                        👤
+                    </div>
+                    <div class="wireframe-info">
+                        <div class="wireframe-title">Member Onboarding</div>
+                        <div class="wireframe-desc">Multi-step onboarding with fitness goals, medical information, and progress tracking.</div>
+                        <div class="wireframe-meta">
+                            <div class="meta-item">📱 Mobile</div>
+                            <div class="meta-item">🎯 Goals</div>
+                            <div class="meta-item">⚕️ Medical</div>
+                        </div>
+                        <button class="view-btn">View Wireframe</button>
+                    </div>
+                </div>
+
+                <div class="wireframe-card" onclick="openWireframe('03-class-booking.html')">
+                    <div class="wireframe-preview">
+                        <div class="wireframe-number">03</div>
+                        📅
+                    </div>
+                    <div class="wireframe-info">
+                        <div class="wireframe-title">Class Booking</div>
+                        <div class="wireframe-desc">Calendar view with trainer availability, class filtering, and real-time booking system.</div>
+                        <div class="wireframe-meta">
+                            <div class="meta-item">📱 Mobile</div>
+                            <div class="meta-item">📅 Calendar</div>
+                            <div class="meta-item">👥 Trainer Info</div>
+                        </div>
+                        <button class="view-btn">View Wireframe</button>
+                    </div>
+                </div>
+
+                <div class="wireframe-card" onclick="openWireframe('04-qr-checkin.html')">
+                    <div class="wireframe-preview">
+                        <div class="wireframe-number">04</div>
+                        📱
+                    </div>
+                    <div class="wireframe-info">
+                        <div class="wireframe-title">QR Check-In</div>
+                        <div class="wireframe-desc">Biometric check-in with QR scanning, facial recognition, and emergency contact access.</div>
+                        <div class="wireframe-meta">
+                            <div class="meta-item">📱 Mobile</div>
+                            <div class="meta-item">🔐 Biometric</div>
+                            <div class="meta-item">⚡ Fast</div>
+                        </div>
+                        <button class="view-btn">View Wireframe</button>
+                    </div>
+                </div>
+
+                <div class="wireframe-card" onclick="openWireframe('05-staff-dashboard.html')">
+                    <div class="wireframe-preview">
+                        <div class="wireframe-number">05</div>
+                        💻
+                    </div>
+                    <div class="wireframe-info">
+                        <div class="wireframe-title">Staff Dashboard</div>
+                        <div class="wireframe-desc">Tablet-optimized interface for front desk operations with member lookup and attendance tracking.</div>
+                        <div class="wireframe-meta">
+                            <div class="meta-item">💻 Tablet</div>
+                            <div class="meta-item">🔍 Search</div>
+                            <div class="meta-item">⚠️ Emergency</div>
+                        </div>
+                        <button class="view-btn">View Wireframe</button>
+                    </div>
+                </div>
+
+                <div class="wireframe-card" onclick="openWireframe('06-trainer-dashboard.html')">
+                    <div class="wireframe-preview">
+                        <div class="wireframe-number">06</div>
+                        🏋️
+                    </div>
+                    <div class="wireframe-info">
+                        <div class="wireframe-title">Trainer Dashboard</div>
+                        <div class="wireframe-desc">Schedule management, client progress tracking, and session notes for personal trainers.</div>
+                        <div class="wireframe-meta">
+                            <div class="meta-item">📱 Mobile/Tablet</div>
+                            <div class="meta-item">📊 Progress</div>
+                            <div class="meta-item">📝 Notes</div>
+                        </div>
+                        <button class="view-btn">View Wireframe</button>
+                    </div>
+                </div>
+
+                <div class="wireframe-card" onclick="openWireframe('07-workout-tracker.html')">
+                    <div class="wireframe-preview">
+                        <div class="wireframe-number">07</div>
+                        💪
+                    </div>
+                    <div class="wireframe-info">
+                        <div class="wireframe-title">Workout Tracker</div>
+                        <div class="wireframe-desc">Mobile workout logging with sets, reps, weight tracking and exercise library integration.</div>
+                        <div class="wireframe-meta">
+                            <div class="meta-item">📱 Mobile</div>
+                            <div class="meta-item">⚡ Quick Entry</div>
+                            <div class="meta-item">⏱️ Timer</div>
+                        </div>
+                        <button class="view-btn">View Wireframe</button>
+                    </div>
+                </div>
+
+                <div class="wireframe-card" onclick="openWireframe('08-manager-dashboard.html')">
+                    <div class="wireframe-preview">
+                        <div class="wireframe-number">08</div>
+                        👑
+                    </div>
+                    <div class="wireframe-info">
+                        <div class="wireframe-title">Manager Dashboard</div>
+                        <div class="wireframe-desc">Desktop analytics dashboard with revenue tracking, membership churn, and staff performance.</div>
+                        <div class="wireframe-meta">
+                            <div class="meta-item">💻 Desktop</div>
+                            <div class="meta-item">📊 Analytics</div>
+                            <div class="meta-item">💰 Revenue</div>
+                        </div>
+                        <button class="view-btn">View Wireframe</button>
+                    </div>
+                </div>
+
+                <div class="wireframe-card" onclick="openWireframe('12-white-label-editor.html')">
+                    <div class="wireframe-preview">
+                        <div class="wireframe-number">12</div>
+                        🎨
+                    </div>
+                    <div class="wireframe-info">
+                        <div class="wireframe-title">White-Label Editor</div>
+                        <div class="wireframe-desc">Complete branding control with logo upload, color picker, domain setup, and live preview.</div>
+                        <div class="wireframe-meta">
+                            <div class="meta-item">💻 Desktop</div>
+                            <div class="meta-item">🎨 Branding</div>
+                            <div class="meta-item">👀 Preview</div>
+                        </div>
+                        <button class="view-btn">View Wireframe</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flow-section">
+                <div class="flow-title">User Role Flows</div>
+                <div class="flow-grid">
+                    <div class="flow-card">
+                        <div class="flow-icon">👤</div>
+                        <div class="flow-name">Member Flow</div>
+                        <div class="flow-desc">Signup → Goal Setup → Book Class → QR Check-in → Workout Tracking → Payment History</div>
+                    </div>
+                    
+                    <div class="flow-card">
+                        <div class="flow-icon">👨‍💼</div>
+                        <div class="flow-name">Staff Flow</div>
+                        <div class="flow-desc">Check-in Desk → Member Lookup → Emergency Info → Attendance Report → Guest Passes</div>
+                    </div>
+                    
+                    <div class="flow-card">
+                        <div class="flow-icon">🏋️</div>
+                        <div class="flow-name">Trainer Flow</div>
+                        <div class="flow-desc">Schedule View → Client Progress → Session Notes → Equipment Request</div>
+                    </div>
+                    
+                    <div class="flow-card">
+                        <div class="flow-icon">👑</div>
+                        <div class="flow-name">Manager Flow</div>
+                        <div class="flow-desc">Revenue Dashboard → Membership Churn → Staff Performance → White-Label Settings</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="features-section">
+                <div class="features-title">Key Features</div>
+                <div class="features-grid">
+                    <div class="feature-item">
+                        <div class="feature-icon">🔐</div>
+                        <div class="feature-name">Role-based Access</div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">⚡</div>
+                        <div class="feature-name">Automated Triggers</div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">🏷️</div>
+                        <div class="feature-name">White-label Zones</div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">🔄</div>
+                        <div class="feature-name">User Flow Arrows</div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">📲</div>
+                        <div class="feature-name">Device Interactions</div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">🏆</div>
+                        <div class="feature-name">Tier Badges</div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">🏢</div>
+                        <div class="feature-name">Multi-branch Toggle</div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">🚨</div>
+                        <div class="feature-name">Emergency Contact</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openWireframe(filename) {
+            window.open(filename, '_blank');
+        }
+        
+        // Add some interactivity
+        document.querySelectorAll('.wireframe-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-5px)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+            });
+        });
+    </script>
+</body>
+</html> 

@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GymAuto - Manager Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+            min-height: 100vh;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+        }
+        
+        .manager-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .manager-avatar {
+            width: 50px;
+            height: 50px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 18px;
+        }
+        
+        .manager-details h2 {
+            font-size: 18px;
+            margin-bottom: 2px;
+        }
+        
+        .manager-details p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .date-display {
+            text-align: right;
+        }
+        
+        .date-display .date {
+            font-size: 16px;
+            font-weight: 600;
+        }
+        
+        .date-display .time {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+        
+        .notification-btn {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 18px;
+            position: relative;
+        }
+        
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #ef4444;
+            color: white;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .sidebar {
+            width: 250px;
+            background: white;
+            height: calc(100vh - 90px);
+            position: fixed;
+            left: 0;
+            top: 90px;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            overflow-y: auto;
+        }
+        
+        .nav-item {
+            padding: 15px 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-left: 3px solid transparent;
+        }
+        
+        .nav-item:hover {
+            background: #f8f9ff;
+            border-left-color: #667eea;
+        }
+        
+        .nav-item.active {
+            background: #f8f9ff;
+            border-left-color: #667eea;
+            color: #667eea;
+        }
+        
+        .nav-icon {
+            font-size: 18px;
+            width: 24px;
+        }
+        
+        .main-content {
+            margin-left: 250px;
+            padding: 30px;
+        }
+        
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .metric-card {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            text-align: center;
+        }
+        
+        .metric-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin: 0 auto 15px;
+        }
+        
+        .metric-icon.revenue {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+        }
+        
+        .metric-icon.members {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+        
+        .metric-icon.attendance {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+        }
+        
+        .metric-icon.classes {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+        }
+        
+        .metric-number {
+            font-size: 32px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        
+        .metric-label {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 10px;
+        }
+        
+        .metric-change {
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .metric-change.positive {
+            color: #10b981;
+        }
+        
+        .metric-change.negative {
+            color: #ef4444;
+        }
+        
+        .charts-section {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .chart-card {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+        
+        .chart-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .chart-icon {
+            width: 32px;
+            height: 32px;
+            background: #667eea;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 16px;
+        }
+        
+        .chart-placeholder {
+            height: 300px;
+            background: linear-gradient(45deg, #f8f9fa 25%, transparent 25%), 
+                        linear-gradient(-45deg, #f8f9fa 25%, transparent 25%), 
+                        linear-gradient(45deg, transparent 75%, #f8f9fa 75%), 
+                        linear-gradient(-45deg, transparent 75%, #f8f9fa 75%);
+            background-size: 20px 20px;
+            background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+            font-size: 14px;
+        }
+        
+        .recent-activity {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+        
+        .activity-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 12px 0;
+            border-bottom: 1px solid #f1f3f4;
+        }
+        
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+        
+        .activity-icon {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+        
+        .activity-icon.member {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+        
+        .activity-icon.payment {
+            background: #dcfce7;
+            color: #166534;
+        }
+        
+        .activity-icon.alert {
+            background: #fef2f2;
+            color: #dc2626;
+        }
+        
+        .activity-content h4 {
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 2px;
+        }
+        
+        .activity-content p {
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .activity-time {
+            font-size: 11px;
+            color: #999;
+            margin-left: auto;
+        }
+        
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .action-card {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .action-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.15);
+        }
+        
+        .action-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            margin: 0 auto 15px;
+        }
+        
+        .action-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+        
+        .action-desc {
+            font-size: 12px;
+            color: #666;
+            line-height: 1.4;
+        }
+        
+        .annotations {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            background: rgba(255,255,255,0.95);
+            padding: 20px;
+            border-radius: 8px;
+            font-size: 12px;
+            max-width: 280px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        
+        .annotation {
+            margin-bottom: 10px;
+            color: #333;
+        }
+        
+        .annotation strong {
+            color: #667eea;
+        }
+    </style>
+</head>
+<body>
+    <div class="annotations">
+        <div class="annotation"><strong>💻 Desktop Optimized:</strong> Large screen layout</div>
+        <div class="annotation"><strong>📊 Real-time Analytics:</strong> Live data updates</div>
+        <div class="annotation"><strong>⚡ Quick Actions:</strong> One-click operations</div>
+        <div class="annotation"><strong>📈 Performance Metrics:</strong> Revenue & growth tracking</div>
+    </div>
+
+    <div class="header">
+        <div class="header-left">
+            <div class="logo">GymAuto</div>
+            <div class="manager-info">
+                <div class="manager-avatar">JD</div>
+                <div class="manager-details">
+                    <h2>John Davis</h2>
+                    <p>Gym Manager</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="header-right">
+            <div class="date-display">
+                <div class="date" id="currentDate">December 15, 2024</div>
+                <div class="time" id="currentTime">9:45 AM</div>
+            </div>
+            <button class="notification-btn" onclick="showNotifications()">
+                🔔
+                <div class="notification-badge">5</div>
+            </button>
+        </div>
+    </div>
+
+    <div class="sidebar">
+        <div class="nav-item active" onclick="switchTab('dashboard')">
+            <div class="nav-icon">📊</div>
+            <div>Dashboard</div>
+        </div>
+        <div class="nav-item" onclick="switchTab('members')">
+            <div class="nav-icon">👥</div>
+            <div>Members</div>
+        </div>
+        <div class="nav-item" onclick="switchTab('classes')">
+            <div class="nav-icon">📅</div>
+            <div>Classes</div>
+        </div>
+        <div class="nav-item" onclick="switchTab('staff')">
+            <div class="nav-icon">👨‍💼</div>
+            <div>Staff</div>
+        </div>
+        <div class="nav-item" onclick="switchTab('payments')">
+            <div class="nav-icon">💰</div>
+            <div>Payments</div>
+        </div>
+        <div class="nav-item" onclick="switchTab('reports')">
+            <div class="nav-icon">📋</div>
+            <div>Reports</div>
+        </div>
+        <div class="nav-item" onclick="switchTab('settings')">
+            <div class="nav-icon">⚙️</div>
+            <div>Settings</div>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="dashboard-grid">
+            <div class="metric-card">
+                <div class="metric-icon revenue">💰</div>
+                <div class="metric-number">$45,230</div>
+                <div class="metric-label">Monthly Revenue</div>
+                <div class="metric-change positive">+12.5% vs last month</div>
+            </div>
+            
+            <div class="metric-card">
+                <div class="metric-icon members">👥</div>
+                <div class="metric-number">1,247</div>
+                <div class="metric-label">Active Members</div>
+                <div class="metric-change positive">+23 this month</div>
+            </div>
+            
+            <div class="metric-card">
+                <div class="metric-icon attendance">📈</div>
+                <div class="metric-number">78%</div>
+                <div class="metric-label">Average Attendance</div>
+                <div class="metric-change positive">+5.2% vs last month</div>
+            </div>
+            
+            <div class="metric-card">
+                <div class="metric-icon classes">📅</div>
+                <div class="metric-number">156</div>
+                <div class="metric-label">Classes This Month</div>
+                <div class="metric-change positive">+8 classes</div>
+            </div>
+        </div>
+
+        <div class="charts-section">
+            <div class="chart-card">
+                <div class="chart-title">
+                    <div class="chart-icon">📊</div>
+                    Revenue Trends
+                </div>
+                <div class="chart-placeholder">
+                    Revenue Chart - Monthly trends, daily breakdown, membership tiers
+                </div>
+            </div>
+            
+            <div class="chart-card">
+                <div class="chart-title">
+                    <div class="chart-icon">👥</div>
+                    Member Growth
+                </div>
+                <div class="chart-placeholder">
+                    Growth Chart - New members, churn rate, retention
+                </div>
+            </div>
+        </div>
+
+        <div class="quick-actions">
+            <div class="action-card" onclick="openMembers()">
+                <div class="action-icon">👥</div>
+                <div class="action-title">Manage Members</div>
+                <div class="action-desc">Add, edit, and manage member accounts</div>
+            </div>
+            
+            <div class="action-card" onclick="openClasses()">
+                <div class="action-icon">📅</div>
+                <div class="action-title">Schedule Classes</div>
+                <div class="action-desc">Create and manage class schedules</div>
+            </div>
+            
+            <div class="action-card" onclick="openStaff()">
+                <div class="action-icon">👨‍💼</div>
+                <div class="action-title">Staff Management</div>
+                <div class="action-desc">Manage staff accounts and permissions</div>
+            </div>
+        </div>
+
+        <div class="recent-activity">
+            <div class="chart-title">
+                <div class="chart-icon">📝</div>
+                Recent Activity
+            </div>
+            
+            <div class="activity-item">
+                <div class="activity-icon member">👤</div>
+                <div class="activity-content">
+                    <h4>New Member Registration</h4>
+                    <p>John Smith joined with Premium membership</p>
+                </div>
+                <div class="activity-time">2 min ago</div>
+            </div>
+            
+            <div class="activity-item">
+                <div class="activity-icon payment">💰</div>
+                <div class="activity-content">
+                    <h4>Payment Received</h4>
+                    <p>Monthly payment from Mary Johnson</p>
+                </div>
+                <div class="activity-time">15 min ago</div>
+            </div>
+            
+            <div class="activity-item">
+                <div class="activity-icon alert">⚠️</div>
+                <div class="activity-content">
+                    <h4>Membership Expiring</h4>
+                    <p>Robert Davis membership expires in 3 days</p>
+                </div>
+                <div class="activity-time">1 hour ago</div>
+            </div>
+            
+            <div class="activity-item">
+                <div class="activity-icon member">👤</div>
+                <div class="activity-content">
+                    <h4>Class Booking</h4>
+                    <p>Sarah booked HIIT class for tomorrow</p>
+                </div>
+                <div class="activity-time">2 hours ago</div>
+            </div>
+            
+            <div class="activity-item">
+                <div class="activity-icon payment">💰</div>
+                <div class="activity-content">
+                    <h4>Guest Pass Sold</h4>
+                    <p>Guest pass purchased for $25</p>
+                </div>
+                <div class="activity-time">3 hours ago</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function updateTime() {
+            const now = new Date();
+            document.getElementById('currentDate').textContent = now.toLocaleDateString('en-US', { 
+                month: 'long', 
+                day: 'numeric', 
+                year: 'numeric' 
+            });
+            document.getElementById('currentTime').textContent = now.toLocaleTimeString('en-US', { 
+                hour: 'numeric', 
+                minute: '2-digit',
+                hour12: true 
+            });
+        }
+        
+        function switchTab(tab) {
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            event.target.closest('.nav-item').classList.add('active');
+            
+            // In real app, load different dashboard sections
+            console.log('Switching to tab:', tab);
+            switch (tab) {
+                case 'dashboard':
+                    window.location.href = '02-manager-dashboard.html';
+                    break;
+                case 'members':
+                    window.location.href = '03-member-management.html';
+                case 'classes':
+                    window.location.href = '04-class-management.html';
+                case 'staff':
+                    window.location.href = '05-staff-management.html';
+                case 'payments':
+                    window.location.href = '06-payment-reports.html';
+                case 'reports':
+            }
+        }
+        
+        function showNotifications() {
+            // In real app, show notifications panel
+            console.log('Showing notifications');
+        }
+        
+        function openMembers() {
+            window.location.href = '03-member-management.html';
+        }
+        
+        function openClasses() {
+            window.location.href = '04-class-management.html';
+        }
+        
+        function openStaff() {
+            window.location.href = '05-staff-management.html';
+        }
+        
+        // Update time every second
+        setInterval(updateTime, 1000);
+        updateTime();
+    </script>
+</body>
+</html> 

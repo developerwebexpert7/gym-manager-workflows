@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staff Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+            min-height: 100vh;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .staff-avatar {
+            width: 40px;
+            height: 40px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+        
+        .staff-info h2 {
+            font-size: 18px;
+            margin-bottom: 2px;
+        }
+        
+        .staff-info p {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+        
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .time-display {
+            text-align: right;
+        }
+        
+        .time-display .time {
+            font-size: 20px;
+            font-weight: 600;
+        }
+        
+        .time-display .date {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+        
+        .notification-btn {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 18px;
+            position: relative;
+        }
+        
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #ef4444;
+            color: white;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .section {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+        
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .section-icon {
+            width: 32px;
+            height: 32px;
+            background: #667eea;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 16px;
+        }
+        
+        .search-box {
+            position: relative;
+            margin-bottom: 20px;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 12px 16px 12px 45px;
+            border: 2px solid #e1e5e9;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+            font-size: 18px;
+        }
+        
+        .member-card {
+            border: 2px solid #e1e5e9;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .member-card:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.15);
+        }
+        
+        .member-card.checked-in {
+            border-color: #10b981;
+            background: #f0fdf4;
+        }
+        
+        .member-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        
+        .member-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .member-avatar {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+        
+        .member-details h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 2px;
+        }
+        
+        .member-details p {
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .member-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+        }
+        
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-weight: 500;
+        }
+        
+        .status-badge.active {
+            background: #dcfce7;
+            color: #166534;
+        }
+        
+        .status-badge.expired {
+            background: #fef2f2;
+            color: #dc2626;
+        }
+        
+        .checkin-time {
+            font-size: 12px;
+            color: #666;
+            margin-top: 8px;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .stat-card {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 24px;
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .emergency-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(220, 38, 38, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            display: none;
+        }
+        
+        .emergency-content {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            max-width: 400px;
+            margin: 20px;
+        }
+        
+        .emergency-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+        
+        .emergency-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #dc2626;
+            margin-bottom: 10px;
+        }
+        
+        .emergency-info {
+            margin-bottom: 20px;
+        }
+        
+        .emergency-btn {
+            background: #dc2626;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin: 0 5px;
+        }
+        
+        .emergency-btn.secondary {
+            background: #6b7280;
+        }
+        
+        .annotations {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: rgba(255,255,255,0.95);
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 12px;
+            max-width: 250px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        
+        .annotation {
+            margin-bottom: 8px;
+            color: #333;
+        }
+        
+        .annotation strong {
+            color: #667eea;
+        }
+        
+        .quick-actions {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .action-btn {
+            background: #f8f9fa;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            padding: 8px 16px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .action-btn:hover {
+            border-color: #667eea;
+            background: #f8f9ff;
+        }
+        
+        .action-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+    </style>
+</head>
+<body>
+    <div class="annotations">
+        <div class="annotation"><strong>💻 Tablet Optimized:</strong> Larger touch targets</div>
+        <div class="annotation"><strong>🔍 Quick Search:</strong> Find members instantly</div>
+        <div class="annotation"><strong>⚠️ Emergency Access:</strong> One-tap emergency info</div>
+        <div class="annotation"><strong>📊 Real-time Stats:</strong> Live attendance tracking</div>
+    </div>
+
+    <div class="header">
+        <div class="header-left">
+            <div class="staff-avatar">SM</div>
+            <div class="staff-info">
+                <h2>Sarah Martinez</h2>
+                <p>Front Desk Staff</p>
+            </div>
+        </div>
+        
+        <div class="header-right">
+            <div class="time-display">
+                <div class="time" id="currentTime">9:45 AM</div>
+                <div class="date" id="currentDate">Dec 15, 2024</div>
+            </div>
+            <button class="notification-btn" onclick="showNotifications()">
+                🔔
+                <div class="notification-badge">3</div>
+            </button>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="section">
+            <div class="section-title">
+                <div class="section-icon">👥</div>
+                Member Lookup
+            </div>
+            
+            <div class="search-box">
+                <div class="search-icon">🔍</div>
+                <input type="text" class="search-input" placeholder="Search by name, phone, or member ID..." onkeyup="searchMembers(this.value)">
+            </div>
+            
+            <div class="quick-actions">
+                <button class="action-btn active" onclick="filterMembers('all')">All</button>
+                <button class="action-btn" onclick="filterMembers('checked-in')">Checked In</button>
+                <button class="action-btn" onclick="filterMembers('expired')">Expired</button>
+                <button class="action-btn" onclick="filterMembers('guests')">Guests</button>
+            </div>
+            
+            <div class="member-card checked-in" onclick="showMemberDetails(this)">
+                <div class="member-header">
+                    <div class="member-info">
+                        <div class="member-avatar">JD</div>
+                        <div class="member-details">
+                            <h3>John Doe</h3>
+                            <p>Premium Member • ID: 12345</p>
+                        </div>
+                    </div>
+                    <div class="member-status">
+                        <div class="status-badge active">Active</div>
+                        <span>✓</span>
+                    </div>
+                </div>
+                <div class="checkin-time">Checked in at 7:30 AM</div>
+            </div>
+            
+            <div class="member-card" onclick="showMemberDetails(this)">
+                <div class="member-header">
+                    <div class="member-info">
+                        <div class="member-avatar">MJ</div>
+                        <div class="member-details">
+                            <h3>Mary Johnson</h3>
+                            <p>Basic Member • ID: 12346</p>
+                        </div>
+                    </div>
+                    <div class="member-status">
+                        <div class="status-badge active">Active</div>
+                        <span>⏳</span>
+                    </div>
+                </div>
+                <div class="checkin-time">Last check-in: Dec 14, 6:00 PM</div>
+            </div>
+            
+            <div class="member-card" onclick="showMemberDetails(this)">
+                <div class="member-header">
+                    <div class="member-info">
+                        <div class="member-avatar">RS</div>
+                        <div class="member-details">
+                            <h3>Robert Smith</h3>
+                            <p>Guest Pass • ID: G789</p>
+                        </div>
+                    </div>
+                    <div class="member-status">
+                        <div class="status-badge expired">Expired</div>
+                        <span>⚠️</span>
+                    </div>
+                </div>
+                <div class="checkin-time">Guest pass expired</div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">
+                <div class="section-icon">📊</div>
+                Today's Attendance
+            </div>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number">47</div>
+                    <div class="stat-label">Checked In</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">12</div>
+                    <div class="stat-label">Classes Today</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">8</div>
+                    <div class="stat-label">Guests</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">3</div>
+                    <div class="stat-label">Expired Members</div>
+                </div>
+            </div>
+            
+            <div class="section-title" style="margin-top: 30px;">
+                <div class="section-icon">⚡</div>
+                Quick Actions
+            </div>
+            
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;">
+                <button class="action-btn" onclick="checkInMember()" style="padding: 15px; font-size: 14px;">
+                    📱 Check-In Member
+                </button>
+                <button class="action-btn" onclick="issueGuestPass()" style="padding: 15px; font-size: 14px;">
+                    🎫 Issue Guest Pass
+                </button>
+                <button class="action-btn" onclick="showEmergencyInfo()" style="padding: 15px; font-size: 14px;">
+                    🚨 Emergency Info
+                </button>
+                <button class="action-btn" onclick="generateReport()" style="padding: 15px; font-size: 14px;">
+                    📋 Generate Report
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="emergency-overlay" id="emergencyOverlay">
+        <div class="emergency-content">
+            <div class="emergency-icon">🚨</div>
+            <div class="emergency-title">Emergency Information</div>
+            <div class="emergency-info">
+                <p><strong>John Doe</strong> has a medical condition: Asthma</p>
+                <p><strong>Emergency Contact:</strong> Jane Doe (555) 123-4567</p>
+                <p><strong>Allergies:</strong> None reported</p>
+            </div>
+            <button class="emergency-btn" onclick="callEmergency()">Call Emergency</button>
+            <button class="emergency-btn secondary" onclick="closeEmergency()">Close</button>
+        </div>
+    </div>
+
+    <script>
+        function updateTime() {
+            const now = new Date();
+            document.getElementById('currentTime').textContent = now.toLocaleTimeString('en-US', { 
+                hour: 'numeric', 
+                minute: '2-digit',
+                hour12: true 
+            });
+            document.getElementById('currentDate').textContent = now.toLocaleDateString('en-US', { 
+                month: 'short', 
+                day: 'numeric', 
+                year: 'numeric' 
+            });
+        }
+        
+        function searchMembers(query) {
+            // In real app, filter members based on search query
+            console.log('Searching for:', query);
+        }
+        
+        function filterMembers(filter) {
+            document.querySelectorAll('.action-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            // In real app, filter members based on selected filter
+        }
+        
+        function showMemberDetails(card) {
+            // In real app, show detailed member information
+            console.log('Showing member details');
+        }
+        
+        function checkInMember() {
+            // In real app, open check-in interface
+            window.location.href = '04-qr-checkin.html';
+        }
+        
+        function issueGuestPass() {
+            // In real app, open guest pass interface
+            console.log('Issuing guest pass');
+        }
+        
+        function showEmergencyInfo() {
+            document.getElementById('emergencyOverlay').style.display = 'flex';
+        }
+        
+        function closeEmergency() {
+            document.getElementById('emergencyOverlay').style.display = 'none';
+        }
+        
+        function callEmergency() {
+            // In real app, initiate emergency call
+            console.log('Calling emergency contact');
+            closeEmergency();
+        }
+        
+        function generateReport() {
+            // In real app, generate attendance report
+            console.log('Generating report');
+        }
+        
+        function showNotifications() {
+            // In real app, show notifications panel
+            console.log('Showing notifications');
+        }
+        
+        // Update time every second
+        setInterval(updateTime, 1000);
+        updateTime();
+    </script>
+</body>
+</html> 
